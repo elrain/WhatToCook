@@ -1,9 +1,11 @@
-package com.elrain.whattocook;
+package com.elrain.whattocook.activity;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.elrain.whattocook.R;
 
 
 public class MainActivity extends ActionBarActivity {
