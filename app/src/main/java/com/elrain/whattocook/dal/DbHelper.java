@@ -4,6 +4,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.elrain.whattocook.dal.helper.Amount;
+import com.elrain.whattocook.dal.helper.AmountType;
+import com.elrain.whattocook.dal.helper.Comments;
+import com.elrain.whattocook.dal.helper.DishType;
+import com.elrain.whattocook.dal.helper.Ingridients;
+import com.elrain.whattocook.dal.helper.KitchenType;
+import com.elrain.whattocook.dal.helper.Recipe;
+
 /**
  * Created by Denys.Husher on 02.06.2015.
  */
@@ -18,7 +26,13 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+        Ingridients.createTable(db);
+        DishType.createTable(db);
+        KitchenType.createTable(db);
+        AmountType.createTable(db);
+        Amount.createTable(db);
+        Recipe.createTable(db);
+        Comments.createTable(db);
     }
 
     @Override

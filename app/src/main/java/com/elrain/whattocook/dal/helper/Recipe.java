@@ -1,12 +1,14 @@
 package com.elrain.whattocook.dal.helper;
 
+import android.database.sqlite.SQLiteDatabase;
+
 /**
  * Created by Denys.Husher on 02.06.2015.
  */
 public class Recipe {
 
-    private static final String TABLE = "recipe";
-    private static final String ID = "_id";
+    public static final String TABLE = "recipe";
+    public static final String ID = "_id";
     private static final String NAME = "name";
     private static final String DESCRIPTION = "description";
     private static final String COOK_TIME = "cookTime";
@@ -17,4 +19,8 @@ public class Recipe {
             + NAME + " VARCHAR (120) NOT NULL, " + DESCRIPTION + " TEXT NOT NULL, " + COOK_TIME + " INTEGER DEFAULT (0), "
             + ID_DISH_TYPE + " INTEGER REFERENCES " + DishType.TABLE + " (" + DishType.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL, "
             + ID_KITCHEN_TYPE + " INTEGER REFERENCES " + KitchenType.TABLE + " (" + KitchenType.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL);";
+
+    public static void createTable(SQLiteDatabase db){
+        db.execSQL(CREATE_TABLE);
+    }
 }
