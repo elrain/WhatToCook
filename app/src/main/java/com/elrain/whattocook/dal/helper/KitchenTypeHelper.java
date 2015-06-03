@@ -12,27 +12,27 @@ import java.util.List;
 /**
  * Created by Denys.Husher on 02.06.2015.
  */
-public class DishType extends DbHelper {
+public class KitchenTypeHelper extends DbHelper{
 
-    public static final String TABLE = "dishType";
+    public static final String TABLE = "kitchenType";
     public static final String ID = "_id";
-    private static final String NAME = "name";
+    public static final String NAME = "name";
 
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + NAME + " VARCHAR (50) NOT NULL);";
 
-    public DishType(Context context) {
-        super(context);
-    }
-
-    public static void createTable(SQLiteDatabase db) {
+    public static void createTable(SQLiteDatabase db){
         db.execSQL(CREATE_TABLE);
         insertValues(db);
     }
 
     private static void insertValues(SQLiteDatabase db) {
         ContentValues cv = new ContentValues();
-        cv.put(NAME, "Основные блюда");
+        cv.put(NAME, "РС‚Р°Р»СЊСЏРЅСЃРєР°СЏ РєСѓС…РЅСЏ");
         db.insert(TABLE, null, cv);
+    }
+
+    public KitchenTypeHelper(Context context) {
+        super(context);
     }
 
     public void add(NamedObject ingridient) {

@@ -1,11 +1,15 @@
 package com.elrain.whattocook.activity;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 
 import com.elrain.whattocook.R;
+import com.elrain.whattocook.adapter.IngridientsAdapter;
+import com.elrain.whattocook.dal.helper.IngridientsHelper;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -13,7 +17,14 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        startActivity(new Intent(this, RecipeActivity.class));
         setContentView(R.layout.activity_main);
+
+        IngridientsHelper ingridients = new IngridientsHelper(this);
+        IngridientsAdapter adapter = new IngridientsAdapter(this, ingridients.getAllIngridients());
+        ListView lv = (ListView) findViewById(R.id.lvItems);
+        lv.setAdapter(adapter);
     }
 
     @Override

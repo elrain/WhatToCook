@@ -13,11 +13,11 @@ import java.util.List;
  * Enum table for amount types like weight, amount of items etc.
  * Created by Denys.Husher on 02.06.2015.
  */
-public class AmountType extends DbHelper{
+public class AmountTypeHelper extends DbHelper{
 
     public static final String TABLE = "amountType";
     public static final String ID = "_id";
-    private static final String NAME = "name";
+    public static final String NAME = "name";
 
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + NAME + " VARCHAR (50) NOT NULL);";
 
@@ -29,35 +29,35 @@ public class AmountType extends DbHelper{
     private static void insertValues(SQLiteDatabase db) {
         ContentValues cv = new ContentValues();
         cv.put(ID, 1);
-        cv.put(NAME, "мл");
+        cv.put(NAME, "РјР»");
         db.insert(TABLE, null, cv);
 
         cv.put(ID, 2);
-        cv.put(NAME, "г");
+        cv.put(NAME, "Рі");
         db.insert(TABLE, null, cv);
 
         cv.put(ID, 3);
-        cv.put(NAME, "ч.ложка(и)");
+        cv.put(NAME, "С‡.Р»РѕР¶РєР°(Рё)");
         db.insert(TABLE, null, cv);
 
         cv.put(ID, 4);
-        cv.put(NAME, "ст.ложка(и)");
+        cv.put(NAME, "СЃС‚.Р»РѕР¶РєР°(Рё)");
         db.insert(TABLE, null, cv);
 
         cv.put(ID, 5);
-        cv.put(NAME, "шт");
+        cv.put(NAME, "С€С‚");
         db.insert(TABLE, null, cv);
 
         cv.put(ID, 6);
-        cv.put(NAME, "стебль");
+        cv.put(NAME, "СЃС‚РµР±Р»СЏ");
         db.insert(TABLE, null, cv);
 
         cv.put(ID, 7);
-        cv.put(NAME, "по вкусу");
+        cv.put(NAME, "РїРѕ РІРєСѓСЃСѓ");
         db.insert(TABLE, null, cv);
     }
 
-    public AmountType(Context context) {
+    public AmountTypeHelper(Context context) {
         super(context);
     }
 
