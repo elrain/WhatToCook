@@ -68,4 +68,6 @@ public class AmountHelper extends DbHelper{
         cv.put(ID_AMOUNT_TYPE, 7);
         db.insert(TABLE, null, cv);
     }
+
+
 }

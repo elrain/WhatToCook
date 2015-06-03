@@ -6,7 +6,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.elrain.whattocook.R;
-import com.elrain.whattocook.adapter.IngridientsAdapter;
 import com.elrain.whattocook.adapter.IngridientsForRecipeAdapter;
 import com.elrain.whattocook.dal.helper.RecipeHelper;
 import com.elrain.whattocook.dao.Recipe;

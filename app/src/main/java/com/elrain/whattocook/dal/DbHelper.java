@@ -8,6 +8,7 @@ import com.elrain.whattocook.dal.helper.AmountHelper;
 import com.elrain.whattocook.dal.helper.AmountInRecipeHelper;
 import com.elrain.whattocook.dal.helper.AmountTypeHelper;
 import com.elrain.whattocook.dal.helper.CommentsHelper;
+import com.elrain.whattocook.dal.helper.CurrentSelectedHelper;
 import com.elrain.whattocook.dal.helper.DishTypeHelper;
 import com.elrain.whattocook.dal.helper.IngridientsHelper;
 import com.elrain.whattocook.dal.helper.KitchenTypeHelper;
@@ -35,6 +36,7 @@ public class DbHelper extends SQLiteOpenHelper {
         AmountHelper.createTable(db);
         CommentsHelper.createTable(db);
         AmountInRecipeHelper.createTable(db);
+        CurrentSelectedHelper.createTable(db);
     }
 
     @Override

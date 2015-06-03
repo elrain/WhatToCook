@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="Encoding">
+  <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
+    <file url="file://$PROJECT_DIR$/app/src/main/java/com/elrain/whattocook/activity/helper/DialogGetter.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/elrain/whattocook/dal/helper/AmountTypeHelper.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/elrain/whattocook/dal/helper/DishTypeHelper.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/elrain/whattocook/dal/helper/IngridientsHelper.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/elrain/whattocook/dal/helper/KitchenTypeHelper.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/elrain/whattocook/dal/helper/RecipeHelper.java" charset="UTF-8" />
+    <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>

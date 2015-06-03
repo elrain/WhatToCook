@@ -18,13 +18,13 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        startActivity(new Intent(this, RecipeActivity.class));
-        setContentView(R.layout.activity_main);
+//        startActivity(new Intent(this, RecipeActivity.class));
+//        setContentView(R.layout.activity_main);
 
-        IngridientsHelper ingridients = new IngridientsHelper(this);
-        IngridientsAdapter adapter = new IngridientsAdapter(this, ingridients.getAllIngridients());
-        ListView lv = (ListView) findViewById(R.id.lvItems);
-        lv.setAdapter(adapter);
+//        IngridientsHelper ingridients = new IngridientsHelper(this);
+//        IngridientsAdapter adapter = new IngridientsAdapter(this, ingridients.getAllIngridients());
+//        ListView lv = (ListView) findViewById(R.id.lvItems);
+//        lv.setAdapter(adapter);
     }
 
     @Override
@@ -42,8 +42,12 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_settings:
+                return true;
+            case R.id.action_add_new:
+                startActivity(new Intent(MainActivity.this, SelectActivity.class));
+
         }
 
         return super.onOptionsItemSelected(item);

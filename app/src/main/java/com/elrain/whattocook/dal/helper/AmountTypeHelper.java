@@ -2,18 +2,20 @@ package com.elrain.whattocook.dal.helper;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dao.NamedObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Enum table for amount types like weight, amount of items etc.
  * Created by Denys.Husher on 02.06.2015.
  */
-public class AmountTypeHelper extends DbHelper{
+public class AmountTypeHelper extends DbHelper {
 
     public static final String TABLE = "amountType";
     public static final String ID = "_id";
@@ -21,7 +23,11 @@ public class AmountTypeHelper extends DbHelper{
 
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + NAME + " VARCHAR (50) NOT NULL);";
 
-    public static void createTable(SQLiteDatabase db){
+    public AmountTypeHelper(Context context) {
+        super(context);
+    }
+
+    public static void createTable(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
         insertValues(db);
     }
@@ -57,10 +63,6 @@ public class AmountTypeHelper extends DbHelper{
         db.insert(TABLE, null, cv);
     }
 
-    public AmountTypeHelper(Context context) {
-        super(context);
-    }
-
     public void add(NamedObject ingridient) {
         ContentValues cv = new ContentValues();
         cv.put(NAME, ingridient.getName());
@@ -82,5 +84,23 @@ public class AmountTypeHelper extends DbHelper{
         } finally {
             db.endTransaction();
         }
+    }
+
+    public List<NamedObject> getTypes() {
+        Cursor cursor = null;
+        List<NamedObject> result = new ArrayList<>();
+        try {
+            cursor = this.getReadableDatabase().query(TABLE, new String[]{ID, NAME}, null, null, null, null, null);
+            while (cursor.moveToNext()){
+                NamedObject no = new NamedObject();
+                no.setId(cursor.getLong(cursor.getColumnIndex(ID)));
+                no.setName(cursor.getString(cursor.getColumnIndex(NAME)));
+                result.add(no);
+            }
+        } finally {
+            if (null != cursor)
+                cursor.close();
+        }
+        return result;
     }
 }
