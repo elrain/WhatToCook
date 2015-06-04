@@ -86,12 +86,12 @@ public class AmountTypeHelper extends DbHelper {
         }
     }
 
-    public List<NamedObject> getTypes() {
+    public List<NamedObject> getAllTypes() {
         Cursor cursor = null;
         List<NamedObject> result = new ArrayList<>();
         try {
             cursor = this.getReadableDatabase().query(TABLE, new String[]{ID, NAME}, null, null, null, null, null);
-            while (cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 NamedObject no = new NamedObject();
                 no.setId(cursor.getLong(cursor.getColumnIndex(ID)));
                 no.setName(cursor.getString(cursor.getColumnIndex(NAME)));
@@ -101,6 +101,27 @@ public class AmountTypeHelper extends DbHelper {
             if (null != cursor)
                 cursor.close();
         }
+        return result;
+    }
+
+    public List<NamedObject> getTypesForGroup(long ingridientId) {
+        Cursor cursor = null;
+        List<NamedObject> result = new ArrayList<>();
+        try {
+            cursor = this.getReadableDatabase().rawQuery("SELECT at." + ID + ", at." + NAME + " " +
+                    "FROM " + TABLE + " as at LEFT JOIN " + AvialAmountTypeHelper.TABLE + " as aat on at." + ID + " = aat." + AvialAmountTypeHelper.ID_AMOUNT_TYPE + " " +
+                    "WHERE aat." + AvialAmountTypeHelper.ID_GROUP + " = " +
+                    "(SELECT " + IngridientsHelper.ID_GROUP + " FROM " + IngridientsHelper.TABLE + " WHERE " + IngridientsHelper.ID + " = ?)", new String[]{String.valueOf(ingridientId)});
+            while (cursor.moveToNext()) {
+                NamedObject no = new NamedObject();
+                no.setId(cursor.getLong(cursor.getColumnIndex(ID)));
+                no.setName(cursor.getString(cursor.getColumnIndex(NAME)));
+                result.add(no);
+            }
+        } finally {
+            if (null != cursor) cursor.close();
+        }
+
         return result;
     }
 }

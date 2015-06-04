@@ -11,7 +11,6 @@ import android.widget.Spinner;
 
 import com.elrain.whattocook.R;
 import com.elrain.whattocook.dal.helper.AmountTypeHelper;
-import com.elrain.whattocook.dao.Ingridient;
 import com.elrain.whattocook.dao.NamedObject;
 
 import java.util.List;
@@ -20,6 +19,13 @@ import java.util.List;
  * Created by Denys.Husher on 03.06.2015.
  */
 public class DialogGetter {
+
+    private static final DialogInterface.OnClickListener CANCEL_LISTENER = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            dialog.dismiss();
+        }
+    };
 
     public static AlertDialog insertQuantityDialog(Context context, long ingridientId) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -31,16 +37,24 @@ public class DialogGetter {
         final Spinner spType = (Spinner) view.findViewById(R.id.spAmountType);
 
         AmountTypeHelper amountTypeHelper = new AmountTypeHelper(context);
-        final List<NamedObject> types = amountTypeHelper.getTypes();
+        final List<NamedObject> types = amountTypeHelper.getTypesForGroup(ingridientId);
         spType.setAdapter(getAdapter(context, types));
 
         builder.setPositiveButton("Добавить", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                int quantity = Integer.parseInt(etQuantity.getText().toString());
-                long typeId = types.get(which).getId();
+                int quantity = 0;
+                try {
+                    quantity = Integer.parseInt(etQuantity.getText().toString());
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
+
+                long typeId = types.get(spType.getSelectedItemPosition()).getId();
             }
         });
+
+        builder.setNegativeButton("Отмена", CANCEL_LISTENER);
         return builder.create();
     }
 

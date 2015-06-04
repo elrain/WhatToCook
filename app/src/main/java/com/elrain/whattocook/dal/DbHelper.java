@@ -7,9 +7,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.elrain.whattocook.dal.helper.AmountHelper;
 import com.elrain.whattocook.dal.helper.AmountInRecipeHelper;
 import com.elrain.whattocook.dal.helper.AmountTypeHelper;
+import com.elrain.whattocook.dal.helper.AvialAmountTypeHelper;
 import com.elrain.whattocook.dal.helper.CommentsHelper;
 import com.elrain.whattocook.dal.helper.CurrentSelectedHelper;
 import com.elrain.whattocook.dal.helper.DishTypeHelper;
+import com.elrain.whattocook.dal.helper.GroupHelper;
 import com.elrain.whattocook.dal.helper.IngridientsHelper;
 import com.elrain.whattocook.dal.helper.KitchenTypeHelper;
 import com.elrain.whattocook.dal.helper.RecipeHelper;
@@ -37,6 +39,8 @@ public class DbHelper extends SQLiteOpenHelper {
         CommentsHelper.createTable(db);
         AmountInRecipeHelper.createTable(db);
         CurrentSelectedHelper.createTable(db);
+        GroupHelper.createTable(db);
+        AvialAmountTypeHelper.createTable(db);
     }
 
     @Override

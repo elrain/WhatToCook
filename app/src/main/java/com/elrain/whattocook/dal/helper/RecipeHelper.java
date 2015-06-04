@@ -88,7 +88,7 @@ public class RecipeHelper extends DbHelper {
                             ingridients);
                 } finally {
                     if (null != ingridientsCursor)
-                        recipeCursor.close();
+                        ingridientsCursor.close();
                 }
             }
         } finally {

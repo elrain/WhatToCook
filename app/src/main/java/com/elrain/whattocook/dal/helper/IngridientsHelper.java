@@ -18,9 +18,10 @@ public class IngridientsHelper extends DbHelper {
     public static final String TABLE = "ingridients";
     public static final String ID = "_id";
     public static final String NAME = "name";
+    public static final String ID_GROUP = "idGroup";
 
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-            + NAME + " VARCHAR (50) NOT NULL);";
+            + NAME + " VARCHAR (50) NOT NULL, " + ID_GROUP + " INTEGER REFERENCES " + GroupHelper.TABLE + " (" + GroupHelper.ID + ") ON DELETE CASCADE NOT NULL);";
 
     public IngridientsHelper(Context context) {
         super(context);
@@ -35,26 +36,32 @@ public class IngridientsHelper extends DbHelper {
         ContentValues cv = new ContentValues();
         cv.put(ID, 1);
         cv.put(NAME, "Вырезка телячья");
+        cv.put(ID_GROUP, 1);
         db.insert(TABLE, null, cv);
 
         cv.put(ID, 2);
         cv.put(NAME, "Прошутто");
+        cv.put(ID_GROUP, 1);
         db.insert(TABLE, null, cv);
 
         cv.put(ID, 3);
         cv.put(NAME, "Шалфей");
+        cv.put(ID_GROUP, 3);
         db.insert(TABLE, null, cv);
 
         cv.put(ID, 4);
         cv.put(NAME, "Масло сливочное");
+        cv.put(ID_GROUP, 1);
         db.insert(TABLE, null, cv);
 
         cv.put(ID, 5);
         cv.put(NAME, "Белое сухое вино");
+        cv.put(ID_GROUP, 2);
         db.insert(TABLE, null, cv);
 
         cv.put(ID, 6);
         cv.put(NAME, "Перец черный молотый");
+        cv.put(ID_GROUP, 3);
         db.insert(TABLE, null, cv);
     }
 
