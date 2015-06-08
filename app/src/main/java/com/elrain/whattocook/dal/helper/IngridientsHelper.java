@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.elrain.whattocook.dal.DbHelper;
-import com.elrain.whattocook.dao.NamedObject;
+import com.elrain.whattocook.dao.IngridientsEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,6 @@ public class IngridientsHelper extends DbHelper {
     public static final String ID = "_id";
     public static final String NAME = "name";
     public static final String ID_GROUP = "idGroup";
-
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
             + NAME + " VARCHAR (50) NOT NULL, " + ID_GROUP + " INTEGER REFERENCES " + GroupHelper.TABLE + " (" + GroupHelper.ID + ") ON DELETE CASCADE NOT NULL);";
 
@@ -29,55 +28,17 @@ public class IngridientsHelper extends DbHelper {
 
     public static void createTable(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
-        insertValues(db);
     }
 
-    private static void insertValues(SQLiteDatabase db) {
-        ContentValues cv = new ContentValues();
-        cv.put(ID, 1);
-        cv.put(NAME, "Вырезка телячья");
-        cv.put(ID_GROUP, 1);
-        db.insert(TABLE, null, cv);
-
-        cv.put(ID, 2);
-        cv.put(NAME, "Прошутто");
-        cv.put(ID_GROUP, 1);
-        db.insert(TABLE, null, cv);
-
-        cv.put(ID, 3);
-        cv.put(NAME, "Шалфей");
-        cv.put(ID_GROUP, 3);
-        db.insert(TABLE, null, cv);
-
-        cv.put(ID, 4);
-        cv.put(NAME, "Масло сливочное");
-        cv.put(ID_GROUP, 1);
-        db.insert(TABLE, null, cv);
-
-        cv.put(ID, 5);
-        cv.put(NAME, "Белое сухое вино");
-        cv.put(ID_GROUP, 2);
-        db.insert(TABLE, null, cv);
-
-        cv.put(ID, 6);
-        cv.put(NAME, "Перец черный молотый");
-        cv.put(ID_GROUP, 3);
-        db.insert(TABLE, null, cv);
-    }
-
-    public void add(NamedObject ingridient) {
-        ContentValues cv = new ContentValues();
-        cv.put(NAME, ingridient.getName());
-        this.getWritableDatabase().insert(TABLE, null, cv);
-    }
-
-    public void add(List<NamedObject> ingridients) {
+    public void add(List<IngridientsEntity> ingridients) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         try {
-            for (NamedObject no : ingridients) {
+            for (IngridientsEntity no : ingridients) {
                 ContentValues contentValues = new ContentValues();
+                contentValues.put(ID, no.getId());
                 contentValues.put(NAME, no.getName());
+                contentValues.put(ID_GROUP, no.getIdGroup());
                 db.insert(TABLE, null, contentValues);
             }
             db.setTransactionSuccessful();
@@ -88,15 +49,14 @@ public class IngridientsHelper extends DbHelper {
         }
     }
 
-    public List<NamedObject> getAllIngridients() {
+    public List<IngridientsEntity> getAllIngridients() {
         Cursor cursor = null;
-        List<NamedObject> result = new ArrayList<>();
+        List<IngridientsEntity> result = new ArrayList<>();
         try {
-            cursor = this.getReadableDatabase().query(TABLE, new String[]{ID, NAME}, null, null, null, null, null);
+            cursor = this.getReadableDatabase().query(TABLE, new String[]{ID, NAME, ID_GROUP}, null, null, null, null, null);
             while (cursor.moveToNext()) {
-                NamedObject no = new NamedObject();
-                no.setId(cursor.getLong(cursor.getColumnIndex(ID)));
-                no.setName(cursor.getString(cursor.getColumnIndex(NAME)));
+                IngridientsEntity no = new IngridientsEntity(cursor.getLong(cursor.getColumnIndex(ID)),
+                        cursor.getString(cursor.getColumnIndex(NAME)), cursor.getLong(cursor.getColumnIndex(ID_GROUP)));
                 result.add(no);
             }
         } finally {

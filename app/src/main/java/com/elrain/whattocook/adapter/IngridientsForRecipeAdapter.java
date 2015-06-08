@@ -16,7 +16,6 @@ import java.util.List;
  * Created by Denys.Husher on 03.06.2015.
  */
 public class IngridientsForRecipeAdapter extends BaseAdapter {
-
     private List<Ingridient> mIngridients;
     private LayoutInflater mInflater;
 

@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dao.Ingridient;
+import com.elrain.whattocook.dao.NamedEntity;
 import com.elrain.whattocook.dao.Recipe;
+import com.elrain.whattocook.dao.RecipeEntity;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,7 +19,6 @@ import java.util.List;
  * Created by Denys.Husher on 02.06.2015.
  */
 public class RecipeHelper extends DbHelper {
-
     public static final String TABLE = "recipe";
     public static final String ID = "_id";
     private static final String NAME = "name";
@@ -25,7 +26,6 @@ public class RecipeHelper extends DbHelper {
     private static final String COOK_TIME = "cookTime";
     private static final String ID_DISH_TYPE = "idDishType";
     private static final String ID_KITCHEN_TYPE = "idKitchenType";
-
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
             + NAME + " VARCHAR (120) NOT NULL, " + DESCRIPTION + " TEXT NOT NULL, " + COOK_TIME + " INTEGER DEFAULT (0), "
             + ID_DISH_TYPE + " INTEGER REFERENCES " + DishTypeHelper.TABLE + " (" + DishTypeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL, "
@@ -37,25 +37,41 @@ public class RecipeHelper extends DbHelper {
 
     public static void createTable(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
-        insertValues(db);
     }
 
-    private static void insertValues(SQLiteDatabase db) {
-        ContentValues cv = new ContentValues();
-        cv.put(ID, 1);
-        cv.put(NAME, "Сальтимбокка");
-        cv.put(DESCRIPTION, "" +
-                "1.  Разогреть духовку до 250 градусов. Отбить куски вырезки до толщины примерно в сантиметр. Посолить, поперчить, положить на каждый несколько листиков шалфея. \n" +
-                "2.  Обернуть каждую отбивную ломтиками прошутто. Если куски получились довольно большими, можно разрезать их для удобства пополам. \n" +
-                "3.  В глубокой сковороде с толстым дном растопить 3 столовые ложки сливочного масла — пока оно не начнет пузыриться. Обжарить мясо, выкладывая его шалфеем вниз, до золотистой корочки. \n" +
-                "4.  Аккуратно перевернуть, готовить еще минуту. Отправить мясо в духовку на пять минут. \n" +
-                "5.  Тем временем плеснуть в сковороду, где жарилась вырезка, вино. Выпаривать его на сильном огне до тех пор, пока количество вина не уменьшится на треть. \n" +
-                "6.  Подержать еще немного, интенсивно помешивая, затянуть соус 1 столовой ложкой сливочного масла. \n" +
-                "7.  Достать мясо из духовки, дать ему отдохнуть несколько минут. Подавать, полив соусом.");
-        cv.put(COOK_TIME, 15);
-        cv.put(ID_DISH_TYPE, 1);
-        cv.put(ID_KITCHEN_TYPE, 1);
-        db.insert(TABLE, null, cv);
+    public int getRecipeCount() {
+        Cursor cursor = null;
+        try {
+            cursor = this.getReadableDatabase().rawQuery("SELECT COUNT(*) as " + NAME + " FROM " + TABLE, null);
+            if (cursor.moveToNext())
+                return cursor.getInt(cursor.getColumnIndex(NAME));
+        } finally {
+            if (null != cursor)
+                cursor.close();
+        }
+        return 0;
+    }
+
+    public void add(List<RecipeEntity> recipes) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (RecipeEntity no : recipes) {
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(ID, no.getId());
+                contentValues.put(NAME, no.getName());
+                contentValues.put(DESCRIPTION, no.getDescription());
+                contentValues.put(COOK_TIME, no.getCookTime());
+                contentValues.put(ID_KITCHEN_TYPE, no.getIdKitchenType());
+                contentValues.put(ID_DISH_TYPE, no.getIdDishType());
+                db.insert(TABLE, null, contentValues);
+            }
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public Recipe getRecipe(long recipeId) {
@@ -83,7 +99,7 @@ public class RecipeHelper extends DbHelper {
                         ingridients.add(ingridient);
                     }
                     result = new Recipe(recipeCursor.getLong(recipeCursor.getColumnIndex(ID)), recipeCursor.getString(recipeCursor.getColumnIndex(NAME)),
-                            recipeCursor.getString(recipeCursor.getColumnIndex(DESCRIPTION)), new Date(recipeCursor.getLong(recipeCursor.getColumnIndex(COOK_TIME))),
+                            recipeCursor.getString(recipeCursor.getColumnIndex(DESCRIPTION)), recipeCursor.getInt(recipeCursor.getColumnIndex(COOK_TIME)),
                             recipeCursor.getString(recipeCursor.getColumnIndex("kt" + NAME)), recipeCursor.getString(recipeCursor.getColumnIndex("dt" + NAME)),
                             ingridients);
                 } finally {

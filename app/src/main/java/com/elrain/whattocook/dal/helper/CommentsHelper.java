@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
  * Created by Denys.Husher on 03.06.2015.
  */
 public class CommentsHelper {
-
     private static final String TABLE = "comments";
     private static final String ID = "_id";
     private static final String TEXT = "text";
@@ -16,7 +15,7 @@ public class CommentsHelper {
             + TEXT + " TEXT NOT NULL, " + TIME + " DATETIME NOT NULL, "
             + ID_RECIPE + " INTEGER REFERENCES " + RecipeHelper.TABLE + " (" + RecipeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL);";
 
-    public static void createTable(SQLiteDatabase db){
+    public static void createTable(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
     }
 }

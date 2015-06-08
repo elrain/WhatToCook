@@ -1,28 +1,26 @@
 package com.elrain.whattocook.dao;
 
-import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Denys.Husher on 03.06.2015.
+ * Created by elrain on 05.06.15.
  */
-public class Recipe {
+public class RecipeEntity {
     private long id;
     private String name;
     private String description;
     private int cookTime;
-    private String dishTypeName;
-    private String kitchenTypeName;
+    private long idKitchenType;
+    private long idDishType;
     private List<Ingridient> ingridients;
 
-    public Recipe(long id, String name, String description, int cookTime, String dishTypeName, String kitchenTypeName, List<Ingridient> ingridients) {
+    public RecipeEntity(long id, String name, String description, int cookTime, long idKitchenType, long idDishType) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.cookTime = cookTime;
-        this.dishTypeName = dishTypeName;
-        this.kitchenTypeName = kitchenTypeName;
-        this.ingridients = ingridients;
+        this.idKitchenType = idKitchenType;
+        this.idDishType = idDishType;
     }
 
     public long getId() {
@@ -41,15 +39,19 @@ public class Recipe {
         return cookTime;
     }
 
-    public String getDishTypeName() {
-        return dishTypeName;
+    public long getIdKitchenType() {
+        return idKitchenType;
     }
 
-    public String getKitchenTypeName() {
-        return kitchenTypeName;
+    public long getIdDishType() {
+        return idDishType;
     }
 
     public List<Ingridient> getIngridients() {
         return ingridients;
+    }
+
+    public void setIngridients(List<Ingridient> ingridients) {
+        this.ingridients = ingridients;
     }
 }

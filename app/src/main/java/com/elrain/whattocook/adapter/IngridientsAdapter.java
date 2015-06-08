@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.elrain.whattocook.R;
-import com.elrain.whattocook.dao.NamedObject;
+import com.elrain.whattocook.dao.NamedEntity;
 
 import java.util.List;
 
@@ -16,11 +16,10 @@ import java.util.List;
  * Created by Denys.Husher on 03.06.2015.
  */
 public class IngridientsAdapter extends BaseAdapter {
-
-    private List<NamedObject> mIngridients;
+    private List<NamedEntity> mIngridients;
     private LayoutInflater mInflater;
 
-    public IngridientsAdapter(Context context, List<NamedObject> ingridients) {
+    public IngridientsAdapter(Context context, List<NamedEntity> ingridients) {
         mInflater = LayoutInflater.from(context);
         mIngridients = ingridients;
     }
@@ -31,7 +30,7 @@ public class IngridientsAdapter extends BaseAdapter {
     }
 
     @Override
-    public NamedObject getItem(int position) {
+    public NamedEntity getItem(int position) {
         return mIngridients.get(position);
     }
 
@@ -42,10 +41,10 @@ public class IngridientsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(null == convertView)
+        if (null == convertView)
             convertView = mInflater.inflate(R.layout.ingridient_view, null);
 
-        ((TextView)convertView.findViewById(R.id.tvName)).setText(getItem(position).getName());
+        ((TextView) convertView.findViewById(R.id.tvName)).setText(getItem(position).getName());
         return convertView;
     }
 }

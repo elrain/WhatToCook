@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.elrain.whattocook.dal.DbHelper;
-import com.elrain.whattocook.dao.NamedObject;
+import com.elrain.whattocook.dao.NamedEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,11 +16,9 @@ import java.util.List;
  * Created by Denys.Husher on 02.06.2015.
  */
 public class AmountTypeHelper extends DbHelper {
-
     public static final String TABLE = "amountType";
     public static final String ID = "_id";
     public static final String NAME = "name";
-
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + NAME + " VARCHAR (50) NOT NULL);";
 
     public AmountTypeHelper(Context context) {
@@ -29,52 +27,21 @@ public class AmountTypeHelper extends DbHelper {
 
     public static void createTable(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
-        insertValues(db);
     }
 
-    private static void insertValues(SQLiteDatabase db) {
-        ContentValues cv = new ContentValues();
-        cv.put(ID, 1);
-        cv.put(NAME, "мл");
-        db.insert(TABLE, null, cv);
-
-        cv.put(ID, 2);
-        cv.put(NAME, "г");
-        db.insert(TABLE, null, cv);
-
-        cv.put(ID, 3);
-        cv.put(NAME, "ч.ложка(и)");
-        db.insert(TABLE, null, cv);
-
-        cv.put(ID, 4);
-        cv.put(NAME, "ст.ложка(и)");
-        db.insert(TABLE, null, cv);
-
-        cv.put(ID, 5);
-        cv.put(NAME, "шт");
-        db.insert(TABLE, null, cv);
-
-        cv.put(ID, 6);
-        cv.put(NAME, "стебля");
-        db.insert(TABLE, null, cv);
-
-        cv.put(ID, 7);
-        cv.put(NAME, "по вкусу");
-        db.insert(TABLE, null, cv);
-    }
-
-    public void add(NamedObject ingridient) {
+    public void add(NamedEntity ingridient) {
         ContentValues cv = new ContentValues();
         cv.put(NAME, ingridient.getName());
         this.getWritableDatabase().insert(TABLE, null, cv);
     }
 
-    public void add(List<NamedObject> ingridients) {
+    public void add(List<NamedEntity> ingridients) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.beginTransaction();
         try {
-            for (NamedObject no : ingridients) {
+            for (NamedEntity no : ingridients) {
                 ContentValues contentValues = new ContentValues();
+                contentValues.put(ID, no.getId());
                 contentValues.put(NAME, no.getName());
                 db.insert(TABLE, null, contentValues);
             }
@@ -86,13 +53,13 @@ public class AmountTypeHelper extends DbHelper {
         }
     }
 
-    public List<NamedObject> getAllTypes() {
+    public List<NamedEntity> getAllTypes() {
         Cursor cursor = null;
-        List<NamedObject> result = new ArrayList<>();
+        List<NamedEntity> result = new ArrayList<>();
         try {
             cursor = this.getReadableDatabase().query(TABLE, new String[]{ID, NAME}, null, null, null, null, null);
             while (cursor.moveToNext()) {
-                NamedObject no = new NamedObject();
+                NamedEntity no = new NamedEntity();
                 no.setId(cursor.getLong(cursor.getColumnIndex(ID)));
                 no.setName(cursor.getString(cursor.getColumnIndex(NAME)));
                 result.add(no);
@@ -104,16 +71,16 @@ public class AmountTypeHelper extends DbHelper {
         return result;
     }
 
-    public List<NamedObject> getTypesForGroup(long ingridientId) {
+    public List<NamedEntity> getTypesForGroup(long ingridientId) {
         Cursor cursor = null;
-        List<NamedObject> result = new ArrayList<>();
+        List<NamedEntity> result = new ArrayList<>();
         try {
             cursor = this.getReadableDatabase().rawQuery("SELECT at." + ID + ", at." + NAME + " " +
                     "FROM " + TABLE + " as at LEFT JOIN " + AvialAmountTypeHelper.TABLE + " as aat on at." + ID + " = aat." + AvialAmountTypeHelper.ID_AMOUNT_TYPE + " " +
                     "WHERE aat." + AvialAmountTypeHelper.ID_GROUP + " = " +
                     "(SELECT " + IngridientsHelper.ID_GROUP + " FROM " + IngridientsHelper.TABLE + " WHERE " + IngridientsHelper.ID + " = ?)", new String[]{String.valueOf(ingridientId)});
             while (cursor.moveToNext()) {
-                NamedObject no = new NamedObject();
+                NamedEntity no = new NamedEntity();
                 no.setId(cursor.getLong(cursor.getColumnIndex(ID)));
                 no.setName(cursor.getString(cursor.getColumnIndex(NAME)));
                 result.add(no);

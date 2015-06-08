@@ -11,7 +11,7 @@ import android.widget.Spinner;
 
 import com.elrain.whattocook.R;
 import com.elrain.whattocook.dal.helper.AmountTypeHelper;
-import com.elrain.whattocook.dao.NamedObject;
+import com.elrain.whattocook.dao.NamedEntity;
 
 import java.util.List;
 
@@ -19,7 +19,6 @@ import java.util.List;
  * Created by Denys.Husher on 03.06.2015.
  */
 public class DialogGetter {
-
     private static final DialogInterface.OnClickListener CANCEL_LISTENER = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -37,7 +36,7 @@ public class DialogGetter {
         final Spinner spType = (Spinner) view.findViewById(R.id.spAmountType);
 
         AmountTypeHelper amountTypeHelper = new AmountTypeHelper(context);
-        final List<NamedObject> types = amountTypeHelper.getTypesForGroup(ingridientId);
+        final List<NamedEntity> types = amountTypeHelper.getTypesForGroup(ingridientId);
         spType.setAdapter(getAdapter(context, types));
 
         builder.setPositiveButton("Добавить", new DialogInterface.OnClickListener() {
@@ -58,11 +57,31 @@ public class DialogGetter {
         return builder.create();
     }
 
-    private static ArrayAdapter getAdapter(Context context, List<NamedObject> types) {
+    private static ArrayAdapter getAdapter(Context context, List<NamedEntity> types) {
         String[] names = new String[types.size()];
         for (int index = 0; index < types.size(); ++index)
             names[index] = types.get(index).getName();
 
         return new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, names);
+    }
+
+    public static AlertDialog initDataNeededDialog(Context context, DialogInterface.OnClickListener listener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(context.getString(R.string.dialog_title_recipe));
+        builder.setMessage(context.getString(R.string.dialog_message_recipes_not_found));
+        builder.setPositiveButton(context.getString(R.string.dialog_button_positive_yes), listener);
+        builder.setNegativeButton(context.getString(R.string.dialog_button_negative_no), CANCEL_LISTENER);
+        return builder.create();
+    }
+
+    public static AlertDialog NoInternetDialog(Context context, DialogInterface.OnClickListener listener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(context.getString(R.string.dialog_title_internet));
+        builder.setMessage(context.getString(R.string.dialog_message_no_internet));
+        builder.setPositiveButton(context.getString(R.string.dialog_button_positive_yes), listener);
+        builder.setNegativeButton(context.getString(R.string.dialog_button_negative_no), CANCEL_LISTENER);
+        return builder.create();
     }
 }

@@ -3,7 +3,7 @@ package com.elrain.whattocook.dao;
 /**
  * Created by Denys.Husher on 03.06.2015.
  */
-public class NamedObject {
+public class NamedEntity {
     private long id;
     private String name;
 

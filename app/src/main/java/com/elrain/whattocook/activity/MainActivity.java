@@ -1,30 +1,59 @@
 package com.elrain.whattocook.activity;
 
-import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
 
 import com.elrain.whattocook.R;
+import com.elrain.whattocook.activity.helper.DialogGetter;
 import com.elrain.whattocook.adapter.IngridientsAdapter;
 import com.elrain.whattocook.dal.helper.IngridientsHelper;
+import com.elrain.whattocook.dal.helper.KitchenTypeHelper;
+import com.elrain.whattocook.dal.helper.RecipeHelper;
+import com.elrain.whattocook.message.CommonMessage;
+import com.elrain.whattocook.util.NetworkUtil;
+import com.elrain.whattocook.webutil.rest.ApiWorker;
 
+import de.greenrobot.event.EventBus;
 
 public class MainActivity extends ActionBarActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        EventBus.getDefault().register(this);
 
-//        startActivity(new Intent(this, RecipeActivity.class));
-//        setContentView(R.layout.activity_main);
+        RecipeHelper recipeHelper = new RecipeHelper(this);
+        if (recipeHelper.getRecipeCount() <= 0) {
+            DialogGetter.initDataNeededDialog(this, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    loadData();
+                }
+            }).show();
+        }
+    }
 
-//        IngridientsHelper ingridients = new IngridientsHelper(this);
-//        IngridientsAdapter adapter = new IngridientsAdapter(this, ingridients.getAllIngridients());
-//        ListView lv = (ListView) findViewById(R.id.lvItems);
-//        lv.setAdapter(adapter);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    private void loadData() {
+        if (NetworkUtil.isNetworkOnline(MainActivity.this)) {
+            ApiWorker.getInstance(MainActivity.this).initData();
+        } else {
+            DialogGetter.NoInternetDialog(MainActivity.this, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    loadData();
+                }
+            }).show();
+        }
     }
 
     @Override
@@ -42,14 +71,24 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        switch (id){
+        switch (id) {
             case R.id.action_settings:
                 return true;
-            case R.id.action_add_new:
-                startActivity(new Intent(MainActivity.this, SelectActivity.class));
 
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onEvent(CommonMessage message) {
+        switch (message.mMessageEvent) {
+            case DATA_LOAD_FINISHED:
+            default:
+                ListView lv = (ListView) findViewById(R.id.lvItems);
+                KitchenTypeHelper ingridientsHelper = new KitchenTypeHelper(this);
+                IngridientsAdapter adapter = new IngridientsAdapter(this, ingridientsHelper.getAll());
+                lv.setAdapter(adapter);
+                break;
+        }
     }
 }

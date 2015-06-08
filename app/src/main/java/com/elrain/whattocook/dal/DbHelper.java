@@ -20,7 +20,6 @@ import com.elrain.whattocook.dal.helper.RecipeHelper;
  * Created by Denys.Husher on 02.06.2015.
  */
 public class DbHelper extends SQLiteOpenHelper {
-
     private static final String DB_NAME = "whattocook.db";
     private static final int VERSION = 1;
 
