@@ -7,12 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dao.Ingridient;
-import com.elrain.whattocook.dao.NamedEntity;
 import com.elrain.whattocook.dao.Recipe;
 import com.elrain.whattocook.dao.RecipeEntity;
+import com.elrain.whattocook.util.ImageUtil;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,8 +25,10 @@ public class RecipeHelper extends DbHelper {
     private static final String COOK_TIME = "cookTime";
     private static final String ID_DISH_TYPE = "idDishType";
     private static final String ID_KITCHEN_TYPE = "idKitchenType";
+    private static final String IMAGE = "image";
+
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-            + NAME + " VARCHAR (120) NOT NULL, " + DESCRIPTION + " TEXT NOT NULL, " + COOK_TIME + " INTEGER DEFAULT (0), "
+            + NAME + " VARCHAR (120) NOT NULL, " + DESCRIPTION + " TEXT NOT NULL, " + COOK_TIME + " INTEGER DEFAULT (0), " + IMAGE + " STRING, "
             + ID_DISH_TYPE + " INTEGER REFERENCES " + DishTypeHelper.TABLE + " (" + DishTypeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL, "
             + ID_KITCHEN_TYPE + " INTEGER REFERENCES " + KitchenTypeHelper.TABLE + " (" + KitchenTypeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL);";
 
@@ -54,6 +55,7 @@ public class RecipeHelper extends DbHelper {
 
     public void add(List<RecipeEntity> recipes) {
         SQLiteDatabase db = this.getWritableDatabase();
+        String filePath = getContext().getExternalFilesDir(null) != null ? getContext().getExternalFilesDir(null).getAbsolutePath() : getContext().getFilesDir().getAbsolutePath();
         db.beginTransaction();
         try {
             for (RecipeEntity no : recipes) {
@@ -64,6 +66,7 @@ public class RecipeHelper extends DbHelper {
                 contentValues.put(COOK_TIME, no.getCookTime());
                 contentValues.put(ID_KITCHEN_TYPE, no.getIdKitchenType());
                 contentValues.put(ID_DISH_TYPE, no.getIdDishType());
+                contentValues.put(IMAGE, ImageUtil.saveImage(no.getId(), no.getImage(), filePath));
                 db.insert(TABLE, null, contentValues);
             }
             db.setTransactionSuccessful();

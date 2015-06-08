@@ -1,6 +1,7 @@
 package com.elrain.whattocook.webutil.rest;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.elrain.whattocook.dal.helper.AmountHelper;
 import com.elrain.whattocook.dal.helper.AmountInRecipeHelper;
@@ -40,17 +41,30 @@ public class ApiWorker {
     }
 
     public void initData() {
-        mApi.initData(new Callback<InitDataResponse>() {
+        new AsyncTask<Void, Void,Void>(){
             @Override
-            public void success(InitDataResponse initDataResponse, Response response) {
-                startInit(initDataResponse);
+            protected Void doInBackground(Void... params) {
+                mApi.initData(new Callback<InitDataResponse>() {
+                    @Override
+                    public void success(InitDataResponse initDataResponse, Response response) {
+                        startInit(initDataResponse);
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+
+                    }
+                });
+                return null;
             }
 
             @Override
-            public void failure(RetrofitError error) {
-
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.DATA_LOAD_FINISHED));
             }
-        });
+        }.execute();
+
     }
 
     private void startInit(InitDataResponse initDataResponse) {
@@ -63,8 +77,6 @@ public class ApiWorker {
         insertAmounts(initDataResponse);
         insertRecipes(initDataResponse);
         insertAmountsInRecipe(initDataResponse);
-
-        EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.DATA_LOAD_FINISHED));
     }
 
     private void insertAmountsInRecipe(InitDataResponse initDataResponse) {

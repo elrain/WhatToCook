@@ -22,9 +22,15 @@ import com.elrain.whattocook.dal.helper.RecipeHelper;
 public class DbHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "whattocook.db";
     private static final int VERSION = 1;
+    private Context mContext;
 
     public DbHelper(Context context) {
         super(context.getApplicationContext(), DB_NAME, null, VERSION);
+        mContext = context;
+    }
+
+    protected Context getContext(){
+        return this.mContext;
     }
 
     @Override
