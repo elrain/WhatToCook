@@ -13,15 +13,18 @@ public class Recipe {
     private int cookTime;
     private String dishTypeName;
     private String kitchenTypeName;
+    private String image;
     private List<Ingridient> ingridients;
 
-    public Recipe(long id, String name, String description, int cookTime, String dishTypeName, String kitchenTypeName, List<Ingridient> ingridients) {
+    public Recipe(long id, String name, String description, int cookTime, String dishTypeName,
+                  String kitchenTypeName, String image, List<Ingridient> ingridients) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.cookTime = cookTime;
         this.dishTypeName = dishTypeName;
         this.kitchenTypeName = kitchenTypeName;
+        this.image = image;
         this.ingridients = ingridients;
     }
 
@@ -51,5 +54,9 @@ public class Recipe {
 
     public List<Ingridient> getIngridients() {
         return ingridients;
+    }
+
+    private String getImage() {
+        return image;
     }
 }

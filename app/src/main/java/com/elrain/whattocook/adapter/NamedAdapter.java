@@ -15,11 +15,11 @@ import java.util.List;
 /**
  * Created by Denys.Husher on 03.06.2015.
  */
-public class IngridientsAdapter extends BaseAdapter {
+public class NamedAdapter extends BaseAdapter {
     private List<NamedEntity> mIngridients;
     private LayoutInflater mInflater;
 
-    public IngridientsAdapter(Context context, List<NamedEntity> ingridients) {
+    public NamedAdapter(Context context, List<NamedEntity> ingridients) {
         mInflater = LayoutInflater.from(context);
         mIngridients = ingridients;
     }
@@ -42,7 +42,7 @@ public class IngridientsAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (null == convertView)
-            convertView = mInflater.inflate(R.layout.ingridient_view, null);
+            convertView = mInflater.inflate(R.layout.named_view, null);
 
         ((TextView) convertView.findViewById(R.id.tvName)).setText(getItem(position).getName());
         return convertView;

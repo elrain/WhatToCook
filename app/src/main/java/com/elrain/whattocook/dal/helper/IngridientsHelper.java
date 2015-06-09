@@ -66,4 +66,14 @@ public class IngridientsHelper extends DbHelper {
         return result;
     }
 
+    public String getName(long ingridientId) {
+        Cursor cursor = null;
+        try {
+            cursor = this.getReadableDatabase().query(TABLE, new String[]{NAME}, ID + "=?", new String[]{String.valueOf(ingridientId)}, null, null, null);
+            return cursor.moveToNext() ? cursor.getString(cursor.getColumnIndex(NAME)) : null;
+        } finally {
+            if (null != cursor) cursor.close();
+        }
+    }
+
 }

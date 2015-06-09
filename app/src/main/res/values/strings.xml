@@ -14,4 +14,10 @@
 
     <string name="dialog_button_positive_yes">Да</string>
     <string name="dialog_button_negative_no">Нет</string>
+
+    <string name="drawer_kitchen">Кухня</string>
+    <string name="drawer_dish_types">Категория</string>
+
+    <string name="text_all">Все</string>
+    <string name="button_search_ingridients">Искать рецепты</string>
 </resources>

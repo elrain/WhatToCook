@@ -2,11 +2,14 @@ package com.elrain.whattocook.dal.helper;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.elrain.whattocook.R;
 import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dao.NamedEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,5 +51,26 @@ public class DishTypeHelper extends DbHelper {
         } finally {
             db.endTransaction();
         }
+    }
+
+    public List<NamedEntity> getAll() {
+        Cursor cursor = null;
+        List<NamedEntity> result = new ArrayList<>();
+        NamedEntity ne = new NamedEntity();
+        ne.setId(0);
+        ne.setName(getContext().getString(R.string.text_all));
+        result.add(ne);
+        try {
+            cursor = this.getReadableDatabase().query(TABLE, new String[]{ID, NAME}, null, null, null, null, null);
+            while (cursor.moveToNext()) {
+                ne = new NamedEntity();
+                ne.setId(cursor.getLong(cursor.getColumnIndex(ID)));
+                ne.setName(cursor.getString(cursor.getColumnIndex(NAME)));
+                result.add(ne);
+            }
+        } finally {
+            if (null != cursor) cursor.close();
+        }
+        return result;
     }
 }

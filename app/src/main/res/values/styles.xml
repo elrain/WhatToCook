@@ -5,4 +5,12 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="TextsPref" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/default_text_size</item>
+    </style>
+
+    <style name="EditTextPref" parent="@android:style/Widget.EditText">
+        <item name="android:textSize">@dimen/default_text_size</item>
+    </style>
+
 </resources>

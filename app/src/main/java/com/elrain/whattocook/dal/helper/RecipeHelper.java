@@ -81,7 +81,7 @@ public class RecipeHelper extends DbHelper {
         Cursor recipeCursor = null;
         Recipe result = null;
         try {
-            recipeCursor = this.getReadableDatabase().rawQuery("SELECT re." + ID + ", re." + NAME + ", re." + DESCRIPTION + ", re." + COOK_TIME + ", kt." + KitchenTypeHelper.NAME + " as kt" + NAME +
+            recipeCursor = this.getReadableDatabase().rawQuery("SELECT re." + ID + ", re." + IMAGE + ", re." + NAME + ", re." + DESCRIPTION + ", re." + COOK_TIME + ", kt." + KitchenTypeHelper.NAME + " as kt" + NAME +
                     ", dt." + DishTypeHelper.NAME + " as dt" + NAME + " FROM " + TABLE + " as re LEFT JOIN " + KitchenTypeHelper.TABLE + " as kt on re." + ID + " = kt." + KitchenTypeHelper.ID +
                     "                          LEFT JOIN " + DishTypeHelper.TABLE + " as dt on re." + ID + " = dt." + DishTypeHelper.ID +
                     " WHERE re." + ID + " = ?;", new String[]{String.valueOf(recipeId)});
@@ -104,7 +104,7 @@ public class RecipeHelper extends DbHelper {
                     result = new Recipe(recipeCursor.getLong(recipeCursor.getColumnIndex(ID)), recipeCursor.getString(recipeCursor.getColumnIndex(NAME)),
                             recipeCursor.getString(recipeCursor.getColumnIndex(DESCRIPTION)), recipeCursor.getInt(recipeCursor.getColumnIndex(COOK_TIME)),
                             recipeCursor.getString(recipeCursor.getColumnIndex("kt" + NAME)), recipeCursor.getString(recipeCursor.getColumnIndex("dt" + NAME)),
-                            ingridients);
+                            recipeCursor.getString(recipeCursor.getColumnIndex(IMAGE)), ingridients);
                 } finally {
                     if (null != ingridientsCursor)
                         ingridientsCursor.close();
