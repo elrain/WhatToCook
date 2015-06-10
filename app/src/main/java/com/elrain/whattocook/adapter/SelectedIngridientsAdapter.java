@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.elrain.whattocook.R;
 import com.elrain.whattocook.dal.helper.AmountTypeHelper;
-import com.elrain.whattocook.dal.helper.IngridientsHelper;
 import com.elrain.whattocook.dao.SelectedIngridientsEntity;
 
 import java.util.List;
@@ -18,16 +17,30 @@ import java.util.List;
 /**
  * Created by Denys.Husher on 09.06.2015.
  */
-public class SelectIngridientAdapter extends BaseAdapter {
-
+public class SelectedIngridientsAdapter extends BaseAdapter {
     private final List<SelectedIngridientsEntity> mSelectedIngridients;
     private final LayoutInflater mInflater;
     private final Context mContext;
 
-    public SelectIngridientAdapter(Context context, List<SelectedIngridientsEntity> mSelectedIngridients) {
+    public SelectedIngridientsAdapter(Context context, List<SelectedIngridientsEntity> mSelectedIngridients) {
         this.mSelectedIngridients = mSelectedIngridients;
         mInflater = LayoutInflater.from(context);
         mContext = context;
+    }
+
+    public void addIngridient(SelectedIngridientsEntity ingridient) {
+        boolean isExists = false;
+        for (SelectedIngridientsEntity sie : mSelectedIngridients) {
+            if (sie.getIngridientsEntity().getId() == ingridient.getIngridientsEntity().getId() &&
+                    sie.getIdAmountType() == ingridient.getIdAmountType()) {
+                sie.setQuantity(sie.getQuantity() + ingridient.getQuantity());
+                isExists = true;
+                break;
+            }
+        }
+        if (!isExists)
+            mSelectedIngridients.add(ingridient);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -58,17 +71,8 @@ public class SelectIngridientAdapter extends BaseAdapter {
         } else viewHolder = (ViewHolder) convertView.getTag();
         AmountTypeHelper amountTypeHelper = new AmountTypeHelper(mContext);
         viewHolder.tvAmountType.setText(amountTypeHelper.getTypeName(getItem(position).getIdAmountType()));
-        int quantity = getItem(position).getQuantity();
-        if (quantity == 0) {
-            viewHolder.etQuantity.setVisibility(View.INVISIBLE);
-            viewHolder.tvAmountType.setVisibility(View.INVISIBLE);
-        } else{
-            viewHolder.etQuantity.setVisibility(View.VISIBLE);
-            viewHolder.tvAmountType.setVisibility(View.VISIBLE);
-            viewHolder.etQuantity.setText(String.valueOf(quantity));
-            IngridientsHelper ingridientsHelper = new IngridientsHelper(mContext);
-            viewHolder.tvName.setText(ingridientsHelper.getName(getItem(position).getIdIngridient()));
-        }
+        viewHolder.etQuantity.setText(String.valueOf(getItem(position).getQuantity()));
+        viewHolder.tvName.setText(getItem(position).getIngridientsEntity().getName());
 
         return convertView;
     }

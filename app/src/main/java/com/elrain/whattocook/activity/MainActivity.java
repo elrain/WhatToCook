@@ -5,9 +5,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -16,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.elrain.whattocook.R;
 import com.elrain.whattocook.activity.helper.DialogGetter;
@@ -25,6 +21,7 @@ import com.elrain.whattocook.dal.helper.DishTypeHelper;
 import com.elrain.whattocook.dal.helper.KitchenTypeHelper;
 import com.elrain.whattocook.dal.helper.RecipeHelper;
 import com.elrain.whattocook.dao.NamedEntity;
+import com.elrain.whattocook.fragment.RecipeFragment;
 import com.elrain.whattocook.fragment.SelectFragment;
 import com.elrain.whattocook.message.CommonMessage;
 import com.elrain.whattocook.util.NetworkUtil;
@@ -36,14 +33,14 @@ import java.util.List;
 import de.greenrobot.event.EventBus;
 
 public class MainActivity extends ActionBarActivity {
+    private static final String RECIPES = "recipes";
+    private static final String ADDING_INGRIDIENTS = "addingIngridients";
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager mFragmentManager;
     private HashMap<String, Fragment> mFragmentMap;
     private String mLastTag;
-
-    private static final String ADDING_INGRIDIENTS = "addingIngridients";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +55,6 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.app_name, R.string.app_name) {
-
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
@@ -77,6 +73,8 @@ public class MainActivity extends ActionBarActivity {
 
         EventBus.getDefault().register(this);
 
+        initSpinners();
+
         RecipeHelper recipeHelper = new RecipeHelper(this);
         if (recipeHelper.getRecipeCount() <= 0) {
             DialogGetter.initDataNeededDialog(this, new DialogInterface.OnClickListener() {
@@ -87,11 +85,13 @@ public class MainActivity extends ActionBarActivity {
             }).show();
         }
         initFragmentMap();
+        changeFragment(RECIPES);
     }
 
     private void initFragmentMap() {
         mFragmentMap = new HashMap<>();
         mFragmentMap.put(ADDING_INGRIDIENTS, new SelectFragment());
+        mFragmentMap.put(RECIPES, new RecipeFragment());
     }
 
     private void initSpinners() {
@@ -188,11 +188,10 @@ public class MainActivity extends ActionBarActivity {
             ft.commit();
         }
     }
+
     public void onEvent(CommonMessage message) {
         switch (message.mMessageEvent) {
             case DATA_LOAD_FINISHED:
-            default:
-                Toast.makeText(this, "Load Finished", Toast.LENGTH_SHORT).show();
                 initSpinners();
                 break;
         }

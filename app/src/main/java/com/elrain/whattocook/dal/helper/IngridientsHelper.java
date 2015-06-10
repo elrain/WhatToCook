@@ -76,4 +76,23 @@ public class IngridientsHelper extends DbHelper {
         }
     }
 
+    public List<IngridientsEntity> getIngridientsByName(String likeName) {
+        likeName = likeName.replaceAll("'", "''");
+        likeName = likeName.replace(likeName.charAt(0), likeName.toUpperCase().charAt(0));
+        Cursor cursor = null;
+        List<IngridientsEntity> ingridients = new ArrayList<>();
+        try {
+            cursor = this.getReadableDatabase().rawQuery("SELECT " + ID + ", " + NAME + ", " + ID_GROUP +
+                    " FROM " + TABLE + " WHERE " + NAME + " LIKE '" + likeName + "%%'", null);
+            while (cursor.moveToNext()) {
+                IngridientsEntity entity = new IngridientsEntity(cursor.getLong(cursor.getColumnIndex(ID)),
+                        cursor.getString(cursor.getColumnIndex(NAME)), cursor.getLong(cursor.getColumnIndex(ID_GROUP)));
+                ingridients.add(entity);
+            }
+        } finally {
+            if (null != cursor) cursor.close();
+        }
+        return ingridients;
+    }
+
 }

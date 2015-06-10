@@ -6,9 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.elrain.whattocook.dal.DbHelper;
-import com.elrain.whattocook.dao.Ingridient;
 import com.elrain.whattocook.dao.Recipe;
 import com.elrain.whattocook.dao.RecipeEntity;
+import com.elrain.whattocook.dao.RecipeIngridientsEntity;
 import com.elrain.whattocook.util.ImageUtil;
 
 import java.util.ArrayList;
@@ -26,7 +26,6 @@ public class RecipeHelper extends DbHelper {
     private static final String ID_DISH_TYPE = "idDishType";
     private static final String ID_KITCHEN_TYPE = "idKitchenType";
     private static final String IMAGE = "image";
-
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
             + NAME + " VARCHAR (120) NOT NULL, " + DESCRIPTION + " TEXT NOT NULL, " + COOK_TIME + " INTEGER DEFAULT (0), " + IMAGE + " STRING, "
             + ID_DISH_TYPE + " INTEGER REFERENCES " + DishTypeHelper.TABLE + " (" + DishTypeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL, "
@@ -77,6 +76,22 @@ public class RecipeHelper extends DbHelper {
         }
     }
 
+    public List<Recipe> getAllRecipes() {
+        Cursor cursor = null;
+        List<Recipe> result = new ArrayList<>();
+        try {
+            cursor = this.getReadableDatabase().rawQuery("SELECT " + ID + ", " + NAME + " FROM " + TABLE, null);
+            while (cursor.moveToNext()) {
+                result.add(new Recipe(cursor.getLong(cursor.getColumnIndex(ID)),
+                        cursor.getString(cursor.getColumnIndex(NAME)), null, 0, null, null, null, null));
+            }
+        } finally {
+            if (null != cursor) cursor.close();
+        }
+
+        return result;
+    }
+
     public Recipe getRecipe(long recipeId) {
         Cursor recipeCursor = null;
         Recipe result = null;
@@ -88,7 +103,7 @@ public class RecipeHelper extends DbHelper {
             if (recipeCursor.moveToNext()) {
                 Cursor ingridientsCursor = null;
                 try {
-                    List<Ingridient> ingridients = new ArrayList<>();
+                    List<RecipeIngridientsEntity> ingridients = new ArrayList<>();
                     ingridientsCursor = this.getReadableDatabase().rawQuery("SELECT a." + AmountHelper.COUNT + ", i." + IngridientsHelper.NAME + " as i" + NAME +
                             ", at." + AmountTypeHelper.NAME + " as at" + NAME + " FROM " + AmountInRecipeHelper.TABLE + " as air " +
                             "                               LEFT JOIN " + AmountHelper.TABLE + " as a on a." + AmountHelper.ID + " = air." + AmountInRecipeHelper.ID_AMOUNT +
@@ -96,7 +111,7 @@ public class RecipeHelper extends DbHelper {
                             "                               LEFT JOIN " + AmountTypeHelper.TABLE + " as at on at." + AmountTypeHelper.ID + " = a." + AmountHelper.ID_AMOUNT_TYPE +
                             "    WHERE air." + AmountInRecipeHelper.ID_RECIPE + " = ?;", new String[]{String.valueOf(recipeId)});
                     while (ingridientsCursor.moveToNext()) {
-                        Ingridient ingridient = new Ingridient(ingridientsCursor.getInt(ingridientsCursor.getColumnIndex(AmountHelper.COUNT)),
+                        RecipeIngridientsEntity ingridient = new RecipeIngridientsEntity(ingridientsCursor.getInt(ingridientsCursor.getColumnIndex(AmountHelper.COUNT)),
                                 ingridientsCursor.getString(ingridientsCursor.getColumnIndex("i" + NAME)),
                                 ingridientsCursor.getString(ingridientsCursor.getColumnIndex("at" + NAME)));
                         ingridients.add(ingridient);

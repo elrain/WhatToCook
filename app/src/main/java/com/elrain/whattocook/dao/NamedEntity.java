@@ -7,6 +7,14 @@ public class NamedEntity {
     private long id;
     private String name;
 
+    public NamedEntity(long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public NamedEntity() {
+    }
+
     public long getId() {
         return id;
     }

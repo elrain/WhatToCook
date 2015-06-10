@@ -8,27 +8,27 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.elrain.whattocook.R;
-import com.elrain.whattocook.dao.NamedEntity;
+import com.elrain.whattocook.dao.IngridientsEntity;
 
 import java.util.List;
 
 /**
  * Created by Denys.Husher on 03.06.2015.
  */
-public class NamedAdapter extends BaseAdapter {
-    private List<NamedEntity> mIngridients;
+public class IngridientAdapter extends BaseAdapter {
+    private List<IngridientsEntity> mIngridients;
     private LayoutInflater mInflater;
 
-    public NamedAdapter(Context context, List<NamedEntity> ingridients) {
+    public IngridientAdapter(Context context, List<IngridientsEntity> ingridients) {
         mInflater = LayoutInflater.from(context);
         mIngridients = ingridients;
     }
 
-    public void addObjects(List<NamedEntity> objects) {
-        int size = mIngridients.size();
-        for (NamedEntity input : objects) {
+    public void addObjects(List<IngridientsEntity> objects) {
+        mIngridients.clear();
+        for (IngridientsEntity input : objects) {
             boolean isExist = false;
-            for (NamedEntity exists : mIngridients)
+            for (IngridientsEntity exists : mIngridients)
                 if (input.getId() == exists.getId()) {
                     isExist = true;
                     break;
@@ -36,14 +36,13 @@ public class NamedAdapter extends BaseAdapter {
             if (!isExist)
                 mIngridients.add(input);
         }
-        if (size != mIngridients.size())
-            notifyDataSetChanged();
+        notifyDataSetChanged();
     }
 
-    public void addObject(NamedEntity object) {
+    public void addObject(IngridientsEntity object) {
         int size = mIngridients.size();
         boolean isExist = false;
-        for (NamedEntity exists : mIngridients)
+        for (IngridientsEntity exists : mIngridients)
             if (object.getId() == exists.getId()) {
                 isExist = true;
                 break;
@@ -54,13 +53,18 @@ public class NamedAdapter extends BaseAdapter {
             notifyDataSetChanged();
     }
 
+    public void clearList() {
+        mIngridients.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public int getCount() {
         return mIngridients.size();
     }
 
     @Override
-    public NamedEntity getItem(int position) {
+    public IngridientsEntity getItem(int position) {
         return mIngridients.get(position);
     }
 

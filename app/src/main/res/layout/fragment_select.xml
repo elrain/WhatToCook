@@ -22,18 +22,56 @@
             android:drawableRight="@android:drawable/ic_menu_search"/>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/lvItems"
+    <LinearLayout
+        android:id="@+id/llMyIngridients"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/llSearch"/>
+        android:layout_below="@id/llSearch"
+        android:layout_margin="@dimen/half_activity_horizontal_margin"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/text_my_ingridients"
+            android:textStyle="bold"
+            android:textSize="@dimen/default_text_size"/>
+
+        <ListView
+            android:id="@+id/lvMyItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llSearch"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llMaybeAdded"
+        android:layout_below="@+id/btnSearchRecipe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/half_activity_horizontal_margin"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:text="@string/text_maybe_added_ingridients"
+            android:textSize="@dimen/default_text_size"/>
+
+        <ListView
+            android:id="@+id/lvAddItems"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llSearch"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btnSearchRecipe"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/default_text_size"
-        android:layout_below="@+id/lvItems"
-        android:text="@string/button_search_ingridients"/>
+        android:layout_below="@+id/llMyIngridients"
+        android:text="@string/button_search_ingridients"
+        android:textSize="@dimen/default_text_size"/>
 
 </RelativeLayout>

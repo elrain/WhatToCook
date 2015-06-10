@@ -8,16 +8,22 @@
     
     <string name="dialog_title_recipe">Рецепты</string>
     <string name="dialog_title_internet">Соединение</string>
+    <string name="dialog_title_input_quantity">Введите количество</string>
 
     <string name="dialog_message_recipes_not_found">На вашем устройстве отсутствуют рецепты. Хотите их загрузить?</string>
     <string name="dialog_message_no_internet">Отсутствует соединение с сервером. Повторить?</string>
 
     <string name="dialog_button_positive_yes">Да</string>
     <string name="dialog_button_negative_no">Нет</string>
+    <string name="dialog_button_add">Добавить</string>
+    <string name="dialog_button_cancel">Отмена</string>
 
     <string name="drawer_kitchen">Кухня</string>
     <string name="drawer_dish_types">Категория</string>
 
     <string name="text_all">Все</string>
+    <string name="text_my_ingridients">Мои ингредиенты</string>
+    <string name="text_maybe_added_ingridients">Можно добавить</string>
+
     <string name="button_search_ingridients">Искать рецепты</string>
 </resources>

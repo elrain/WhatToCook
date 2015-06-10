@@ -14,10 +14,9 @@ public class Recipe {
     private String dishTypeName;
     private String kitchenTypeName;
     private String image;
-    private List<Ingridient> ingridients;
+    private List<RecipeIngridientsEntity> ingridients;
 
-    public Recipe(long id, String name, String description, int cookTime, String dishTypeName,
-                  String kitchenTypeName, String image, List<Ingridient> ingridients) {
+    public Recipe(long id, String name, String description, int cookTime, String dishTypeName, String kitchenTypeName, String image, List<RecipeIngridientsEntity> ingridients) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -52,7 +51,7 @@ public class Recipe {
         return kitchenTypeName;
     }
 
-    public List<Ingridient> getIngridients() {
+    public List<RecipeIngridientsEntity> getIngridients() {
         return ingridients;
     }
 

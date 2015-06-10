@@ -16,6 +16,7 @@
         android:id="@+id/etQuantity"
         style="@style/EditTextPref"
         android:layout_width="0dp"
+        android:singleLine="true"
         android:layout_height="match_parent"
         android:layout_weight="7"/>
 

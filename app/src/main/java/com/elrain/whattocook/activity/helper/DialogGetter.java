@@ -11,9 +11,15 @@ import android.widget.Spinner;
 
 import com.elrain.whattocook.R;
 import com.elrain.whattocook.dal.helper.AmountTypeHelper;
+import com.elrain.whattocook.dal.helper.CurrentSelectedHelper;
+import com.elrain.whattocook.dao.IngridientsEntity;
 import com.elrain.whattocook.dao.NamedEntity;
+import com.elrain.whattocook.dao.SelectedIngridientsEntity;
+import com.elrain.whattocook.message.CommonMessage;
 
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by Denys.Husher on 03.06.2015.
@@ -26,20 +32,21 @@ public class DialogGetter {
         }
     };
 
-    public static AlertDialog insertQuantityDialog(Context context, long ingridientId) {
+    public static AlertDialog insertQuantityDialog(Context context, final SelectedIngridientsEntity ingridient) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("Введите количество");
+        builder.setCancelable(false);
+        builder.setTitle(context.getString(R.string.dialog_title_input_quantity));
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.dialog_quantity, null);
         builder.setView(view);
         final EditText etQuantity = (EditText) view.findViewById(R.id.etQuantity);
         final Spinner spType = (Spinner) view.findViewById(R.id.spAmountType);
-
+        etQuantity.setText(String.valueOf(ingridient.getQuantity()));
         AmountTypeHelper amountTypeHelper = new AmountTypeHelper(context);
-        final List<NamedEntity> types = amountTypeHelper.getTypesForGroup(ingridientId);
+        final List<NamedEntity> types = amountTypeHelper.getTypesForGroup(ingridient.getIngridientsEntity().getIdGroup());
         spType.setAdapter(getAdapter(context, types));
-
-        builder.setPositiveButton("Добавить", new DialogInterface.OnClickListener() {
+        spType.setSelection((int)ingridient.getIdAmountType());
+        builder.setPositiveButton(context.getString(R.string.dialog_button_add), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 int quantity = 0;
@@ -48,12 +55,13 @@ public class DialogGetter {
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                 }
-
                 long typeId = types.get(spType.getSelectedItemPosition()).getId();
+
+                EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.INGRIDIENT_ADDED, new SelectedIngridientsEntity(0, typeId, quantity, ingridient.getIngridientsEntity())));
             }
         });
 
-        builder.setNegativeButton("Отмена", CANCEL_LISTENER);
+        builder.setNegativeButton(context.getString(R.string.dialog_button_cancel), CANCEL_LISTENER);
         return builder.create();
     }
 

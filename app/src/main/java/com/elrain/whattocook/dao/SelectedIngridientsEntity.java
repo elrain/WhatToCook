@@ -6,23 +6,23 @@ package com.elrain.whattocook.dao;
 public class SelectedIngridientsEntity {
 
     private long id;
-    private long idIngridient;
     private long idAmountType;
     private int quantity;
+    private IngridientsEntity ingridientsEntity;
 
-    private SelectedIngridientsEntity(long id, long idIngridient, long idAmountType, int quantity) {
+    public SelectedIngridientsEntity(long id, long idAmountType, int quantity, IngridientsEntity ingridientsEntity) {
         this.id = id;
-        this.idIngridient = idIngridient;
         this.idAmountType = idAmountType;
         this.quantity = quantity;
+        this.ingridientsEntity = ingridientsEntity;
     }
 
     public long getId() {
         return id;
     }
 
-    public long getIdIngridient() {
-        return idIngridient;
+    public IngridientsEntity getIngridientsEntity() {
+        return ingridientsEntity;
     }
 
     public long getIdAmountType() {
@@ -31,5 +31,9 @@ public class SelectedIngridientsEntity {
 
     public int getQuantity() {
         return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 }
