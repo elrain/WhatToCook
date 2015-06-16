@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.elrain.whattocook.R;
+import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dal.helper.AmountTypeHelper;
 import com.elrain.whattocook.dal.helper.CurrentSelectedHelper;
 import com.elrain.whattocook.dao.IngridientsEntity;
@@ -42,8 +43,8 @@ public class DialogGetter {
         final EditText etQuantity = (EditText) view.findViewById(R.id.etQuantity);
         final Spinner spType = (Spinner) view.findViewById(R.id.spAmountType);
         etQuantity.setText(String.valueOf(ingridient.getQuantity()));
-        AmountTypeHelper amountTypeHelper = new AmountTypeHelper(context);
-        final List<NamedEntity> types = amountTypeHelper.getTypesForGroup(ingridient.getIngridientsEntity().getIdGroup());
+        final List<NamedEntity> types = AmountTypeHelper.getTypesForGroup(
+                DbHelper.getInstance(context).getReadableDatabase(),ingridient.getIngridientsEntity().getIdGroup());
         spType.setAdapter(getAdapter(context, types));
         spType.setSelection((int)ingridient.getIdAmountType());
         builder.setPositiveButton(context.getString(R.string.dialog_button_add), new DialogInterface.OnClickListener() {

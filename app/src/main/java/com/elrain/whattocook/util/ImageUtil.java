@@ -2,6 +2,7 @@ package com.elrain.whattocook.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
@@ -39,5 +40,9 @@ public class ImageUtil {
     public static Bitmap decodeBase64(String base64) {
         byte[] decodedArray = Base64.decode(base64, 0);
         return BitmapFactory.decodeByteArray(decodedArray, 0, decodedArray.length);
+    }
+
+    public static Drawable getDrawableFromPath(String filePath){
+        return Drawable.createFromPath(filePath);
     }
 }

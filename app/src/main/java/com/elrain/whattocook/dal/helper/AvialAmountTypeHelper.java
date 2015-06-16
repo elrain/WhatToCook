@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by Denys.Husher on 04.06.2015.
  */
-public class AvialAmountTypeHelper extends DbHelper {
+public class AvialAmountTypeHelper {
     public static final String TABLE = "AvailAmountType";
     public static final String ID = "_id";
     public static final String ID_GROUP = "idGroup";
@@ -26,12 +26,7 @@ public class AvialAmountTypeHelper extends DbHelper {
         db.execSQL(CREATE_TABLE);
     }
 
-    public AvialAmountTypeHelper(Context context) {
-        super(context);
-    }
-
-    public void add(List<ManyToManyEntity> rules) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public static void add(SQLiteDatabase db,List<ManyToManyEntity> rules) {
         db.beginTransaction();
         try {
             for (ManyToManyEntity no : rules) {

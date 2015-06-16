@@ -1,8 +1,8 @@
 package com.elrain.whattocook.webutil.rest;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
+import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dal.helper.AmountHelper;
 import com.elrain.whattocook.dal.helper.AmountInRecipeHelper;
 import com.elrain.whattocook.dal.helper.AmountTypeHelper;
@@ -27,10 +27,12 @@ public class ApiWorker {
     private static ApiWorker mInstance;
     private static RestApi mApi;
     private static Context mContext;
+    private static DbHelper mDbHelper;
 
     private ApiWorker(Context context) {
         mApi = RestHelper.getRestAdapter().create(RestApi.class);
         mContext = context;
+        mDbHelper = DbHelper.getInstance(context);
     }
 
     public static ApiWorker getInstance(Context context) {
@@ -41,29 +43,17 @@ public class ApiWorker {
     }
 
     public void initData() {
-        new AsyncTask<Void, Void,Void>(){
+        mApi.initData(new Callback<InitDataResponse>() {
             @Override
-            protected Void doInBackground(Void... params) {
-                mApi.initData(new Callback<InitDataResponse>() {
-                    @Override
-                    public void success(InitDataResponse initDataResponse, Response response) {
-                        startInit(initDataResponse);
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-
-                    }
-                });
-                return null;
+            public void success(InitDataResponse initDataResponse, Response response) {
+                startInit(initDataResponse);
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.DATA_LOAD_FINISHED));
+            public void failure(RetrofitError error) {
+
             }
-        }.execute();
+        });
 
     }
 
@@ -77,51 +67,44 @@ public class ApiWorker {
         insertAmounts(initDataResponse);
         insertRecipes(initDataResponse);
         insertAmountsInRecipe(initDataResponse);
+
+        EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.DATA_LOAD_FINISHED));
     }
 
     private void insertAmountsInRecipe(InitDataResponse initDataResponse) {
-        AmountInRecipeHelper amountInRecipeHelper = new AmountInRecipeHelper(mContext);
-        amountInRecipeHelper.add(initDataResponse.getAmountsInRecipes());
+        AmountInRecipeHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getAmountsInRecipes());
     }
 
     private void insertRecipes(InitDataResponse initDataResponse) {
-        RecipeHelper recipeHelper = new RecipeHelper(mContext);
-        recipeHelper.add(initDataResponse.getRecipes());
+        RecipeHelper.add(mDbHelper.getWritableDatabase(), mContext, initDataResponse.getRecipes());
     }
 
     private void insertAmounts(InitDataResponse initDataResponse) {
-        AmountHelper amountHelper = new AmountHelper(mContext);
-        amountHelper.add(initDataResponse.getAmounts());
+        AmountHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getAmounts());
     }
 
     private void insertAmountTypeRules(InitDataResponse initDataResponse) {
-        AvialAmountTypeHelper avialAmountTypeHelper = new AvialAmountTypeHelper(mContext);
-        avialAmountTypeHelper.add(initDataResponse.getAmountTypesRules());
+        AvialAmountTypeHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getAmountTypesRules());
     }
 
     private void insertIngridients(InitDataResponse initDataResponse) {
-        IngridientsHelper ingridientsHelper = new IngridientsHelper(mContext);
-        ingridientsHelper.add(initDataResponse.getIngridients());
+        IngridientsHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getIngridients());
     }
 
     private void insertAmountTypes(InitDataResponse initDataResponse) {
-        AmountTypeHelper amountTypeHelper = new AmountTypeHelper(mContext);
-        amountTypeHelper.add(initDataResponse.getAmountTypes());
+        AmountTypeHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getAmountTypes());
     }
 
     private void insertGroups(InitDataResponse initDataResponse) {
-        GroupHelper groupHelper = new GroupHelper(mContext);
-        groupHelper.add(initDataResponse.getGroups());
+        GroupHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getGroups());
     }
 
     private void insertDishTypes(InitDataResponse initDataResponse) {
-        DishTypeHelper dishTypeHelper = new DishTypeHelper(mContext);
-        dishTypeHelper.add(initDataResponse.getDishTypes());
+        DishTypeHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getDishTypes());
     }
 
     private void insertKitchens(InitDataResponse initDataResponse) {
-        KitchenTypeHelper kitchenTypeHelper = new KitchenTypeHelper(mContext);
-        kitchenTypeHelper.add(initDataResponse.getKitchenTypes());
+        KitchenTypeHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getKitchenTypes());
     }
 
 }

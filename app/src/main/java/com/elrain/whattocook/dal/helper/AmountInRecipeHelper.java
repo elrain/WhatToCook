@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by Denys.Husher on 03.06.2015.
  */
-public class AmountInRecipeHelper extends DbHelper {
+public class AmountInRecipeHelper {
     public static final String TABLE = "amountInRecipe";
     private static final String ID = "_id";
     public static final String ID_AMOUNT = "idAmount";
@@ -26,19 +26,14 @@ public class AmountInRecipeHelper extends DbHelper {
         db.execSQL(CREATE_TABLE);
     }
 
-    public AmountInRecipeHelper(Context context) {
-        super(context);
-    }
-
-    public void add(List<ManyToManyEntity> rules) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public static void add(SQLiteDatabase db, List<ManyToManyEntity> rules) {
         db.beginTransaction();
         try {
             for (ManyToManyEntity no : rules) {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(ID, no.getId());
-                contentValues.put(ID_AMOUNT, no.getIdFirst());
-                contentValues.put(ID_RECIPE, no.getIdSecond());
+                contentValues.put(ID_RECIPE, no.getIdFirst());
+                contentValues.put(ID_AMOUNT, no.getIdSecond());
                 db.insert(TABLE, null, contentValues);
             }
             db.setTransactionSuccessful();

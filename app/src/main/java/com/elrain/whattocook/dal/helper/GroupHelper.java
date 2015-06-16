@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Denys.Husher on 04.06.2015.
  */
-public class GroupHelper extends DbHelper {
+public class GroupHelper {
     public static final String TABLE = "groups";
     public static final String ID = "_id";
     public static final String NAME = "name";
@@ -24,12 +24,7 @@ public class GroupHelper extends DbHelper {
         db.execSQL(CREATE_TABLE);
     }
 
-    public GroupHelper(Context context) {
-        super(context);
-    }
-
-    public void add(List<NamedEntity> groups) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public static void add(SQLiteDatabase db, List<NamedEntity> groups) {
         db.beginTransaction();
         try {
             for (NamedEntity no : groups) {
@@ -46,11 +41,11 @@ public class GroupHelper extends DbHelper {
         }
     }
 
-    public List<NamedEntity> getAll() {
+    public static List<NamedEntity> getAll(SQLiteDatabase db) {
         Cursor cursor = null;
         List<NamedEntity> result = new ArrayList<>();
         try {
-            cursor = this.getReadableDatabase().query(TABLE, new String[]{ID, NAME}, null, null, null, null, null);
+            cursor = db.query(TABLE, new String[]{ID, NAME}, null, null, null, null, null);
             while (cursor.moveToNext()) {
                 NamedEntity ne = new NamedEntity();
                 ne.setId(cursor.getLong(cursor.getColumnIndex(ID)));

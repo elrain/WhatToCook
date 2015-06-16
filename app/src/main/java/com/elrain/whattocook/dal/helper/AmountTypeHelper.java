@@ -1,11 +1,9 @@
 package com.elrain.whattocook.dal.helper;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dao.NamedEntity;
 
 import java.util.ArrayList;
@@ -15,28 +13,23 @@ import java.util.List;
  * Enum table for amount types like weight, amount of items etc.
  * Created by Denys.Husher on 02.06.2015.
  */
-public class AmountTypeHelper extends DbHelper {
+public class AmountTypeHelper {
     public static final String TABLE = "amountType";
     public static final String ID = "_id";
     public static final String NAME = "name";
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " + NAME + " VARCHAR (50) NOT NULL);";
 
-    public AmountTypeHelper(Context context) {
-        super(context);
-    }
-
     public static void createTable(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
     }
 
-    public void add(NamedEntity ingridient) {
+    public static void add(SQLiteDatabase db, NamedEntity ingridient) {
         ContentValues cv = new ContentValues();
         cv.put(NAME, ingridient.getName());
-        this.getWritableDatabase().insert(TABLE, null, cv);
+        db.insert(TABLE, null, cv);
     }
 
-    public void add(List<NamedEntity> ingridients) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public static void add(SQLiteDatabase db, List<NamedEntity> ingridients) {
         db.beginTransaction();
         try {
             for (NamedEntity no : ingridients) {
@@ -53,11 +46,11 @@ public class AmountTypeHelper extends DbHelper {
         }
     }
 
-    public List<NamedEntity> getAllTypes() {
+    public static List<NamedEntity> getAllTypes(SQLiteDatabase db) {
         Cursor cursor = null;
         List<NamedEntity> result = new ArrayList<>();
         try {
-            cursor = this.getReadableDatabase().query(TABLE, new String[]{ID, NAME}, null, null, null, null, null);
+            cursor = db.query(TABLE, new String[]{ID, NAME}, null, null, null, null, null);
             while (cursor.moveToNext()) {
                 NamedEntity no = new NamedEntity();
                 no.setId(cursor.getLong(cursor.getColumnIndex(ID)));
@@ -71,11 +64,11 @@ public class AmountTypeHelper extends DbHelper {
         return result;
     }
 
-    public List<NamedEntity> getTypesForGroup(long ingridientId) {
+    public static List<NamedEntity> getTypesForGroup(SQLiteDatabase db, long ingridientId) {
         Cursor cursor = null;
         List<NamedEntity> result = new ArrayList<>();
         try {
-            cursor = this.getReadableDatabase().rawQuery("SELECT at." + ID + ", at." + NAME + " " +
+            cursor = db.rawQuery("SELECT at." + ID + ", at." + NAME + " " +
                     "FROM " + TABLE + " as at LEFT JOIN " + AvialAmountTypeHelper.TABLE + " as aat on at." + ID + " = aat." + AvialAmountTypeHelper.ID_AMOUNT_TYPE + " " +
                     "WHERE aat." + AvialAmountTypeHelper.ID_GROUP + " = " +
                     "(SELECT " + IngridientsHelper.ID_GROUP + " FROM " + IngridientsHelper.TABLE + " WHERE " + IngridientsHelper.ID + " = ?)", new String[]{String.valueOf(ingridientId)});
@@ -92,10 +85,10 @@ public class AmountTypeHelper extends DbHelper {
         return result;
     }
 
-    public String getTypeName(long typeId) {
+    public static String getTypeName(SQLiteDatabase db, long typeId) {
         Cursor cursor = null;
         try {
-            cursor = this.getReadableDatabase().query(TABLE, new String[]{NAME}, ID + "= ?", new String[]{String.valueOf(typeId)}, null, null, null);
+            cursor = db.query(TABLE, new String[]{NAME}, ID + "= ?", new String[]{String.valueOf(typeId)}, null, null, null);
             return cursor.moveToNext() ? cursor.getString(cursor.getColumnIndex(NAME)) : null;
         } finally {
             if (null != cursor) cursor.close();

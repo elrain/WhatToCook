@@ -55,7 +55,7 @@ public class Recipe {
         return ingridients;
     }
 
-    private String getImage() {
+    public String getImage() {
         return image;
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Created by Denys.Husher on 02.06.2015.
  */
-public class AmountHelper extends DbHelper {
+public class AmountHelper {
     public static final String TABLE = "amount";
     public static final String ID = "_id";
     public static final String COUNT = "count";
@@ -22,16 +22,11 @@ public class AmountHelper extends DbHelper {
             + ID_INGRIDIENTS + " INTEGER REFERENCES " + IngridientsHelper.TABLE + " (" + IngridientsHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL, "
             + ID_AMOUNT_TYPE + " INTEGER REFERENCES " + AmountTypeHelper.TABLE + " (" + AmountTypeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL);";
 
-    public AmountHelper(Context context) {
-        super(context);
-    }
-
     public static void createTable(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
     }
 
-    public void add(List<AmountEntity> amounts) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public static void add(SQLiteDatabase db, List<AmountEntity> amounts) {
         db.beginTransaction();
         try {
             for (AmountEntity no : amounts) {

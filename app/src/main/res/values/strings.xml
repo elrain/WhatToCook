@@ -18,12 +18,15 @@
     <string name="dialog_button_add">Добавить</string>
     <string name="dialog_button_cancel">Отмена</string>
 
-    <string name="drawer_kitchen">Кухня</string>
-    <string name="drawer_dish_types">Категория</string>
+    <string name="drawer_text_kitchen_type">Кухня</string>
+    <string name="drawer_text_dish_type">Категория</string>
+    <string name="drawer_button_recipe">Рецепты</string>
+    <string name="drawer_button_my_ingridients">Мои ингредиенты</string>
 
     <string name="text_all">Все</string>
     <string name="text_my_ingridients">Мои ингредиенты</string>
     <string name="text_maybe_added_ingridients">Можно добавить</string>
 
     <string name="button_search_ingridients">Искать рецепты</string>
+    <string name="button_show_recipe_full_info">Показать рецепт полностью</string>
 </resources>

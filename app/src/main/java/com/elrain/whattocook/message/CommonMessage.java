@@ -17,6 +17,6 @@ public class CommonMessage {
     }
 
     public enum MessageEvent{
-        DATA_LOAD_FINISHED, INGRIDIENT_ADDED
+        DATA_LOAD_FINISHED, INGRIDIENT_ADDED, FILTER_CHANGED
     }
 }

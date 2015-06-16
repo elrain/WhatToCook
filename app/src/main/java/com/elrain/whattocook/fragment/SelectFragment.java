@@ -9,50 +9,53 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import com.elrain.whattocook.R;
-import com.elrain.whattocook.activity.helper.DialogGetter;
+import com.elrain.whattocook.activity.MainActivity;
 import com.elrain.whattocook.adapter.IngridientAdapter;
-import com.elrain.whattocook.adapter.SelectedIngridientsAdapter;
-import com.elrain.whattocook.dal.helper.CurrentSelectedHelper;
+import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dal.helper.IngridientsHelper;
 import com.elrain.whattocook.dao.IngridientsEntity;
-import com.elrain.whattocook.dao.SelectedIngridientsEntity;
-import com.elrain.whattocook.message.CommonMessage;
+import com.elrain.whattocook.message.ChangeFragmentMessage;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import de.greenrobot.event.EventBus;
 
 /**
  * Created by Denys.Husher on 09.06.2015.
  */
-public class SelectFragment extends Fragment implements View.OnClickListener{
+public class SelectFragment extends Fragment implements View.OnClickListener {
     private ListView mLvMyIngridients;
     private ListView mLvAddIngridients;
     private IngridientAdapter mAddIngridientsAdapter;
-    private SelectedIngridientsAdapter mSelectedIngridientsAdapter;
+    private IngridientAdapter mSelectedIngridientsAdapter;
     private EditText mEtSearch;
+    private DbHelper mDbHelper;
+    private Set<Long> mSelected;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDbHelper = DbHelper.getInstance(getActivity());
+        mSelected = new HashSet<>();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        EventBus.getDefault().register(this);
         return inflater.inflate(R.layout.fragment_select, container, false);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -61,27 +64,23 @@ public class SelectFragment extends Fragment implements View.OnClickListener{
         mLvMyIngridients = (ListView) view.findViewById(R.id.lvMyItems);
         mLvAddIngridients = (ListView) view.findViewById(R.id.lvAddItems);
         mAddIngridientsAdapter = new IngridientAdapter(getActivity(), new ArrayList<IngridientsEntity>());
-        mSelectedIngridientsAdapter = new SelectedIngridientsAdapter(getActivity(), new ArrayList<SelectedIngridientsEntity>());
+        mSelectedIngridientsAdapter = new IngridientAdapter(getActivity(), new ArrayList<IngridientsEntity>());
         mLvAddIngridients.setAdapter(mAddIngridientsAdapter);
         mLvMyIngridients.setAdapter(mSelectedIngridientsAdapter);
         mLvAddIngridients.setOnItemClickListener(new AddElementListener());
         mEtSearch = (EditText) view.findViewById(R.id.etSearch);
         mEtSearch.addTextChangedListener(new SearchWatcher());
-    }
-
-    public void onEvent(CommonMessage message) {
-        if (message.mMessageEvent == CommonMessage.MessageEvent.INGRIDIENT_ADDED) {
-            SelectedIngridientsEntity entity = (SelectedIngridientsEntity) message.messageObject;
-            CurrentSelectedHelper helper = new CurrentSelectedHelper(getActivity());
-            helper.addIngridient(entity);
-            mSelectedIngridientsAdapter.addIngridient(entity);
-        }
+        Button btnSearch = (Button) view.findViewById(R.id.btnSearchRecipe);
+        btnSearch.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnSearchRecipe:
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("search", true);
+                EventBus.getDefault().post(new ChangeFragmentMessage(MainActivity.RECIPES, bundle));
                 break;
         }
     }
@@ -89,7 +88,8 @@ public class SelectFragment extends Fragment implements View.OnClickListener{
     private class AddElementListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            DialogGetter.insertQuantityDialog(getActivity(), new SelectedIngridientsEntity(0, 0, 0, mAddIngridientsAdapter.getItem(position))).show();
+            mSelected.add(id);
+            mSelectedIngridientsAdapter.addObject(IngridientsHelper.getIngridientById(mDbHelper.getReadableDatabase(), id));
         }
     }
 
@@ -107,8 +107,7 @@ public class SelectFragment extends Fragment implements View.OnClickListener{
         @Override
         public void afterTextChanged(Editable s) {
             if (s.toString().length() >= 2) {
-                IngridientsHelper helper = new IngridientsHelper(getActivity());
-                List<IngridientsEntity> ingridients = helper.getIngridientsByName(s.toString());
+                List<IngridientsEntity> ingridients = IngridientsHelper.getIngridientsByName(mDbHelper.getReadableDatabase(), s.toString());
                 mAddIngridientsAdapter.addObjects(ingridients);
             } else mAddIngridientsAdapter.clearList();
         }

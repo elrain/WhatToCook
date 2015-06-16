@@ -22,15 +22,16 @@ import com.elrain.whattocook.dal.helper.RecipeHelper;
 public class DbHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "whattocook.db";
     private static final int VERSION = 1;
-    private Context mContext;
+    private static DbHelper mInstance;
 
-    public DbHelper(Context context) {
-        super(context.getApplicationContext(), DB_NAME, null, VERSION);
-        mContext = context;
+    public synchronized static DbHelper getInstance(Context context){
+        if(null == mInstance)
+            mInstance = new DbHelper(context);
+        return mInstance;
     }
 
-    protected Context getContext(){
-        return this.mContext;
+    private DbHelper(Context context) {
+        super(context.getApplicationContext(), DB_NAME, null, VERSION);
     }
 
     @Override
@@ -43,7 +44,6 @@ public class DbHelper extends SQLiteOpenHelper {
         AmountHelper.createTable(db);
         CommentsHelper.createTable(db);
         AmountInRecipeHelper.createTable(db);
-        CurrentSelectedHelper.createTable(db);
         GroupHelper.createTable(db);
         AvialAmountTypeHelper.createTable(db);
     }

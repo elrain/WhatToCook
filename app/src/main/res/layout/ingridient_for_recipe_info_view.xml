@@ -8,20 +8,15 @@
     <TextView
         android:id="@+id/tvName"
         android:layout_width="0dp"
+        android:textSize="@dimen/default_text_size"
         android:layout_height="match_parent"
-        android:layout_weight="35"/>
+        android:layout_weight="45"/>
 
     <TextView
-        android:id="@+id/tvAmount"
+        android:id="@+id/tvQuantityAndType"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="15"
-        android:gravity="right"/>
+        android:gravity="center"/>
 
-    <TextView
-        android:id="@+id/tvAmountType"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="10"
-        android:gravity="left"/>
 </LinearLayout>

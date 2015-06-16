@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- The main content view -->
@@ -9,7 +8,7 @@
     android:id="@+id/content_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"/>
-     The navigation drawer
+    <!--The navigation drawer android:layout_gravity="start"  -->
     <LinearLayout
         android:id="@+id/left_drawer"
         android:layout_width="240dp"
@@ -25,10 +24,10 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_marginLeft="@dimen/half_activity_horizontal_margin"
             android:layout_marginRight="@dimen/half_activity_horizontal_margin"
-            android:src="@drawable/ic_launcher"/>
+            android:layout_weight="1"
+            android:src="@drawable/ic_launcher" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -38,35 +37,63 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <TextView
+            <Button
+                android:id="@+id/btnOpenRecipes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/drawer_kitchen"/>
+                android:text="@string/drawer_button_recipe" />
 
-            <Spinner
-                android:id="@+id/spKitchens"
-                android:background="@drawable/spinner_background"
+            <Button
+                android:id="@+id/btnOpenMyIngridients"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/drawer_button_my_ingridients" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_marginLeft="@dimen/half_activity_horizontal_margin"
             android:layout_marginRight="@dimen/half_activity_horizontal_margin"
-            android:orientation="vertical">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:weightSum="3">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/drawer_dish_types"/>
 
-            <Spinner
-                android:id="@+id/spDishTypes"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/drawer_text_kitchen_type" />
+
+                <Spinner
+                    android:id="@+id/spKitchens"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_background" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/drawer_text_dish_type" />
+
+                <Spinner
+                    android:id="@+id/spDishTypes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

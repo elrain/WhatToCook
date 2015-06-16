@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.elrain.whattocook.R;
+import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dal.helper.AmountTypeHelper;
 import com.elrain.whattocook.dao.SelectedIngridientsEntity;
 
@@ -69,8 +70,8 @@ public class SelectedIngridientsAdapter extends BaseAdapter {
             viewHolder.tvAmountType = (TextView) convertView.findViewById(R.id.tvAmountType);
             convertView.setTag(viewHolder);
         } else viewHolder = (ViewHolder) convertView.getTag();
-        AmountTypeHelper amountTypeHelper = new AmountTypeHelper(mContext);
-        viewHolder.tvAmountType.setText(amountTypeHelper.getTypeName(getItem(position).getIdAmountType()));
+        viewHolder.tvAmountType.setText(AmountTypeHelper.getTypeName(DbHelper.getInstance(mContext).getReadableDatabase(),
+                getItem(position).getIdAmountType()));
         viewHolder.etQuantity.setText(String.valueOf(getItem(position).getQuantity()));
         viewHolder.tvName.setText(getItem(position).getIngridientsEntity().getName());
 
