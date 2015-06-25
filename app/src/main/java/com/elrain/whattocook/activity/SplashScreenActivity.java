@@ -12,7 +12,7 @@ import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dal.helper.RecipeHelper;
 import com.elrain.whattocook.message.CommonMessage;
 import com.elrain.whattocook.util.NetworkUtil;
-import com.elrain.whattocook.webutil.rest.ApiWorker;
+import com.elrain.whattocook.webutil.rest.api.ApiWorker;
 
 import de.greenrobot.event.EventBus;
 
@@ -43,7 +43,7 @@ public class SplashScreenActivity extends Activity {
                 if (RecipeHelper.getRecipeCount(DbHelper.getInstance(SplashScreenActivity.this).getReadableDatabase()) == 0)
                     loadData();
                 else {
-                    startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                    startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
                     SplashScreenActivity.this.finish();
                 }
             }
@@ -60,7 +60,7 @@ public class SplashScreenActivity extends Activity {
         if (NetworkUtil.isNetworkOnline(SplashScreenActivity.this)) {
             ApiWorker.getInstance(SplashScreenActivity.this).initData();
         } else {
-            DialogGetter.NoInternetDialog(SplashScreenActivity.this, new DialogInterface.OnClickListener() {
+            DialogGetter.noInternetDialog(SplashScreenActivity.this, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     loadData();
@@ -72,9 +72,10 @@ public class SplashScreenActivity extends Activity {
     public void onEventMainThread(CommonMessage message) {
         switch (message.mMessageEvent) {
             case DATA_LOAD_FINISHED:
-//                initSpinners();
                 startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
                 SplashScreenActivity.this.finish();
+                break;
+            case DATA_LOAD_FAIL:
                 break;
         }
     }

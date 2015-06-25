@@ -84,13 +84,49 @@ public class DialogGetter {
         return builder.create();
     }
 
-    public static AlertDialog NoInternetDialog(Context context, DialogInterface.OnClickListener listener){
+    public static AlertDialog noInternetDialog(Context context, DialogInterface.OnClickListener listener){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setCancelable(false);
         builder.setTitle(context.getString(R.string.dialog_title_internet));
         builder.setMessage(context.getString(R.string.dialog_message_no_internet));
         builder.setPositiveButton(context.getString(R.string.dialog_button_positive_yes), listener);
         builder.setNegativeButton(context.getString(R.string.dialog_button_negative_no), CANCEL_LISTENER);
+        return builder.create();
+    }
+
+    public static AlertDialog incorrectCredentials(Context context){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(context.getString(R.string.dialog_title_login));
+        builder.setMessage(context.getString(R.string.dialog_message_incorrect_credentials));
+        builder.setNegativeButton(context.getString(R.string.dialog_button_cancel), CANCEL_LISTENER);
+        return builder.create();
+    }
+
+    public static AlertDialog noServerConnection(Context context){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(context.getString(R.string.dialog_title_login));
+        builder.setMessage(context.getString(R.string.dialog_message_server_unavailable));
+        builder.setNegativeButton(context.getString(R.string.dialog_button_cancel), CANCEL_LISTENER);
+        return builder.create();
+    }
+
+    public static AlertDialog userRegistered(Context context, DialogInterface.OnClickListener listener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(context.getString(R.string.dialog_title_registration));
+        builder.setMessage(context.getString(R.string.dialog_message_user_registered));
+        builder.setNegativeButton(context.getString(R.string.dialog_button_close), listener);
+        return builder.create();
+    }
+
+    public static AlertDialog userAlreadyExists(Context context){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(context.getString(R.string.dialog_title_registration));
+        builder.setMessage(context.getString(R.string.dialog_message_user_already_exists));
+        builder.setNegativeButton(context.getString(R.string.dialog_button_close), CANCEL_LISTENER);
         return builder.create();
     }
 }

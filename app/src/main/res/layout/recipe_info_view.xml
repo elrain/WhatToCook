@@ -37,4 +37,12 @@
         android:layout_height="wrap_content"
         android:text="@string/button_show_recipe_full_info"
         android:textSize="@dimen/default_text_size" />
+
+    <Button
+        android:id="@+id/btnShowComments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_show_recipe_comments"
+        android:textSize="@dimen/default_text_size" />
+
 </LinearLayout>

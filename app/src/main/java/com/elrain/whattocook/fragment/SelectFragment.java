@@ -32,6 +32,7 @@ import de.greenrobot.event.EventBus;
  * Created by Denys.Husher on 09.06.2015.
  */
 public class SelectFragment extends Fragment implements View.OnClickListener {
+    public static final String INGRIDIENTS = "ingridients";
     private ListView mLvMyIngridients;
     private ListView mLvAddIngridients;
     private IngridientAdapter mAddIngridientsAdapter;
@@ -51,11 +52,6 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_select, container, false);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
     }
 
     @Override
@@ -79,8 +75,13 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btnSearchRecipe:
                 Bundle bundle = new Bundle();
-                bundle.putBoolean("search", true);
-                EventBus.getDefault().post(new ChangeFragmentMessage(MainActivity.RECIPES, bundle));
+                long[] array = new long[mSelected.size()];
+                int i=0;
+                for(long id : mSelected)
+                    array[i++] = id;
+                bundle.putLongArray(INGRIDIENTS, array);
+                ((MainActivity)getActivity()).changeFragment(MainActivity.RECIPES, bundle);
+//                EventBus.getDefault().post(new ChangeFragmentMessage(MainActivity.RECIPES, bundle));
                 break;
         }
     }
@@ -90,6 +91,7 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             mSelected.add(id);
             mSelectedIngridientsAdapter.addObject(IngridientsHelper.getIngridientById(mDbHelper.getReadableDatabase(), id));
+            mEtSearch.setText("");
         }
     }
 

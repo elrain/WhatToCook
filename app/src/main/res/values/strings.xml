@@ -4,19 +4,29 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
-    <string name="add_new_ingridient">Добавить ингредиент</string>
-    
+    <string name="action_add_new_ingridient">Добавить ингредиент</string>
+    <string name="action_clear_recipes_list">Очистить список</string>
+
     <string name="dialog_title_recipe">Рецепты</string>
+    <string name="dialog_title_login">Авторизация</string>
+    <string name="dialog_title_registration">Регистрация</string>
     <string name="dialog_title_internet">Соединение</string>
     <string name="dialog_title_input_quantity">Введите количество</string>
 
     <string name="dialog_message_recipes_not_found">На вашем устройстве отсутствуют рецепты. Хотите их загрузить?</string>
     <string name="dialog_message_no_internet">Отсутствует соединение с сервером. Повторить?</string>
+    <string name="dialog_message_logining">Выполняется вход. Подождите пожалуйста.</string>
+    <string name="dialog_message_incorrect_credentials">Имя или пароль указаны неверно.</string>
+    <string name="dialog_message_server_unavailable">Сервер недотупен. Повторите попытку позже.</string>
+    <string name="dialog_message_user_registered">Пользователь зарегестрирован.</string>
+    <string name="dialog_message_user_already_exists">Пользователь с таким именем существует.</string>
+    <string name="dialog_message_getting_comments">Загружаются коментарии. Подождите пожалуйста.</string>
 
     <string name="dialog_button_positive_yes">Да</string>
     <string name="dialog_button_negative_no">Нет</string>
     <string name="dialog_button_add">Добавить</string>
     <string name="dialog_button_cancel">Отмена</string>
+    <string name="dialog_button_close">Закрыть</string>
 
     <string name="drawer_text_kitchen_type">Кухня</string>
     <string name="drawer_text_dish_type">Категория</string>
@@ -24,9 +34,26 @@
     <string name="drawer_button_my_ingridients">Мои ингредиенты</string>
 
     <string name="text_all">Все</string>
+    <string name="text_no_comments">Коментариев нет</string>
     <string name="text_my_ingridients">Мои ингредиенты</string>
     <string name="text_maybe_added_ingridients">Можно добавить</string>
 
     <string name="button_search_ingridients">Искать рецепты</string>
     <string name="button_show_recipe_full_info">Показать рецепт полностью</string>
+    <string name="button_show_recipe_comments">Показать коментарии</string>
+    <string name="button_login">Войти</string>
+    <string name="button_leave_comments">Оставить коментарий</string>
+    <string name="button_login_noname">Войти анонимно</string>
+    <string name="button_login_register_name">Регистрация</string>
+    <string name="button_show_all_recipes">Показать все рецепты</string>
+
+    <string name="text_hint_name">Имя</string>
+    <string name="text_hint_password">Пароль</string>
+    <string name="text_hint_password_confirm">Повторите пароль</string>
+
+    <string name="text_error_empty">Заполните</string>
+    <string name="text_error_not_same">Пароли не совпадают</string>
+    <string name="text_error_length_low" formatted="true">Длинна &#60; %d </string>
+    <string name="text_error_length_high" formatted="true">Длинна &#62; %d </string>
+
 </resources>

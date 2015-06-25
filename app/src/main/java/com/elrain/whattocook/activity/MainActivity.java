@@ -3,7 +3,6 @@ package com.elrain.whattocook.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,22 +17,18 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.elrain.whattocook.R;
-import com.elrain.whattocook.activity.helper.DialogGetter;
 import com.elrain.whattocook.adapter.NamedAdapter;
 import com.elrain.whattocook.dal.DbHelper;
-import com.elrain.whattocook.dal.helper.CurrentSelectedHelper;
 import com.elrain.whattocook.dal.helper.DishTypeHelper;
 import com.elrain.whattocook.dal.helper.KitchenTypeHelper;
-import com.elrain.whattocook.dal.helper.RecipeHelper;
 import com.elrain.whattocook.dao.NamedEntity;
+import com.elrain.whattocook.fragment.CommentsFragment;
 import com.elrain.whattocook.fragment.DetailsFragment;
 import com.elrain.whattocook.fragment.RecipeFragment;
 import com.elrain.whattocook.fragment.SelectFragment;
 import com.elrain.whattocook.message.ChangeFragmentMessage;
 import com.elrain.whattocook.message.CommonMessage;
-import com.elrain.whattocook.util.NetworkUtil;
 import com.elrain.whattocook.util.Preferences;
-import com.elrain.whattocook.webutil.rest.ApiWorker;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +39,7 @@ public class MainActivity extends ActionBarActivity {
     public static final String RECIPES = "recipes";
     public static final String ADDING_INGRIDIENTS = "addingIngridients";
     public static final String DETAILS_INFO = "detailsInfo";
+    public static final String COMMENTS = "comments";
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -113,6 +109,7 @@ public class MainActivity extends ActionBarActivity {
         mFragmentMap.put(ADDING_INGRIDIENTS, new SelectFragment());
         mFragmentMap.put(RECIPES, new RecipeFragment());
         mFragmentMap.put(DETAILS_INFO, new DetailsFragment());
+        mFragmentMap.put(COMMENTS, new CommentsFragment());
     }
 
     private void initSpinners() {
@@ -201,7 +198,6 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_search:
                 changeFragment(ADDING_INGRIDIENTS, null);
                 break;
-
         }
 
         return super.onOptionsItemSelected(item);
@@ -211,9 +207,9 @@ public class MainActivity extends ActionBarActivity {
         Fragment currentFragment = mFragmentManager.findFragmentById(R.id.content_frame);
         Fragment newFragment = mFragmentMap.get(tag);
         if (null != bundle) {
-            if (null == newFragment.getArguments())
+            if (null == newFragment.getArguments()) {
                 newFragment.setArguments(bundle);
-            else
+            } else
                 newFragment.getArguments().putAll(bundle);
         }
         if (newFragment != currentFragment) {
@@ -237,7 +233,8 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if (mFragmentMap.get(mLastTag) instanceof DetailsFragment)
+        if (mFragmentMap.get(mLastTag) instanceof DetailsFragment
+                || mFragmentMap.get(mLastTag) instanceof CommentsFragment)
             changeFragment(RECIPES, null);
         else if (mFragmentMap.get(mLastTag) instanceof RecipeFragment)
             super.onBackPressed();

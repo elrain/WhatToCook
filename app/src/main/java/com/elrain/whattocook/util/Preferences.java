@@ -11,6 +11,8 @@ public class Preferences {
     private static final String PREFERENCES_NAME = "whatToCookPref";
     private static final String KEY_KITCHEN = "kitchen";
     private static final String KEY_DISH = "dish";
+    private static final String KEY_USER_NAME = "userName";
+    private static final String KEY_USER_TYPE = "userType";
     private static Preferences mInstance;
     private final SharedPreferences mPreferences;
 
@@ -23,19 +25,35 @@ public class Preferences {
         return mInstance;
     }
 
-    public void setKitchenTypeId(long kitchenTypeId){
-        mPreferences.edit().putLong(KEY_KITCHEN, kitchenTypeId).apply();
-    }
-
-    public long getKitchenTypeId(){
+    public long getKitchenTypeId() {
         return mPreferences.getLong(KEY_KITCHEN, 0);
     }
 
-    public void setDishTypeId(long dishTypeId){
+    public void setKitchenTypeId(long kitchenTypeId) {
+        mPreferences.edit().putLong(KEY_KITCHEN, kitchenTypeId).apply();
+    }
+
+    public long getDishTypeId() {
+        return mPreferences.getLong(KEY_DISH, 0);
+    }
+
+    public void setDishTypeId(long dishTypeId) {
         mPreferences.edit().putLong(KEY_DISH, dishTypeId).apply();
     }
 
-    public long getDishTypeId(){
-        return mPreferences.getLong(KEY_DISH, 0);
+    public String getUserName() {
+        return mPreferences.getString(KEY_USER_NAME, null);
+    }
+
+    public void setUserName(String name) {
+        mPreferences.edit().putString(KEY_USER_NAME, name).apply();
+    }
+
+    public long  getUserType() {
+        return mPreferences.getLong(KEY_USER_TYPE, 2);
+    }
+
+    public void setUserType(long type) {
+        mPreferences.edit().putLong(KEY_USER_TYPE, type).apply();
     }
 }

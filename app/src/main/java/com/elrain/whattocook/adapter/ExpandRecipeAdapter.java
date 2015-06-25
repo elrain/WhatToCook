@@ -14,6 +14,7 @@ import com.elrain.whattocook.R;
 import com.elrain.whattocook.activity.MainActivity;
 import com.elrain.whattocook.dao.Recipe;
 import com.elrain.whattocook.dao.RecipeIngridientsEntity;
+import com.elrain.whattocook.fragment.CommentsFragment;
 import com.elrain.whattocook.message.ChangeFragmentMessage;
 import com.elrain.whattocook.util.ImageUtil;
 
@@ -116,15 +117,28 @@ public class ExpandRecipeAdapter extends BaseExpandableListAdapter {
                     EventBus.getDefault().post(new ChangeFragmentMessage(MainActivity.DETAILS_INFO, bundle));
                 }
             });
+            viewHolder.btnShowComments = (Button) convertView.findViewById(R.id.btnShowComments);
+            viewHolder.btnShowComments.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putLong(CommentsFragment.RECIPE_ID, getGroupId(groupPosition));
+                    EventBus.getDefault().post(new ChangeFragmentMessage(MainActivity.COMMENTS, bundle));
+                }
+            });
             convertView.setTag(viewHolder);
         } else viewHolder = (InfoViewHolder) convertView.getTag();
         viewHolder.tvName.setText(getChild(groupPosition, childPosition).getName());
         int quantity = getChild(groupPosition, childPosition).getQuantity();
         viewHolder.tvQuantityAndType.setText(quantity == 0 ? getChild(groupPosition, childPosition)
                 .getAmountTypeName() : quantity + " " + getChild(groupPosition, childPosition).getAmountTypeName());
-        if (childPosition < getChildrenCount(groupPosition) - 1)
+        if (childPosition < getChildrenCount(groupPosition) - 1) {
             viewHolder.btnShowDetails.setVisibility(View.GONE);
-        else viewHolder.btnShowDetails.setVisibility(View.VISIBLE);
+            viewHolder.btnShowComments.setVisibility(View.GONE);
+        } else {
+            viewHolder.btnShowDetails.setVisibility(View.VISIBLE);
+            viewHolder.btnShowComments.setVisibility(View.VISIBLE);
+        }
 
         return convertView;
     }
@@ -146,5 +160,6 @@ public class ExpandRecipeAdapter extends BaseExpandableListAdapter {
         public TextView tvName;
         public TextView tvQuantityAndType;
         public Button btnShowDetails;
+        public Button btnShowComments;
     }
 }

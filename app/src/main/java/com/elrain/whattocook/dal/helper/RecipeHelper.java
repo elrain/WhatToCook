@@ -31,6 +31,8 @@ public class RecipeHelper {
             + NAME + " VARCHAR (120) NOT NULL, " + DESCRIPTION + " TEXT NOT NULL, " + COOK_TIME + " INTEGER DEFAULT (0), " + IMAGE + " TEXT, "
             + ID_DISH_TYPE + " INTEGER REFERENCES " + DishTypeHelper.TABLE + " (" + DishTypeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL, "
             + ID_KITCHEN_TYPE + " INTEGER REFERENCES " + KitchenTypeHelper.TABLE + " (" + KitchenTypeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL);";
+    private static final String AMOUNT_INGRIDIENT_SUM_VIEW = "v1";
+    private static final String RECIPE_INGRIDIENT_SUM_VIEW = "v2";
 
     public static void createTable(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
@@ -170,5 +172,54 @@ public class RecipeHelper {
         }
 
         return result;
+    }
+
+    public static List<Recipe> getPossibleRecipes(SQLiteDatabase db, long[] ids) {
+        List<Recipe> recipes = new ArrayList<>();
+//        ids = new long[]{10, 11, 12, 13, 14};
+        createView1(db, ids);
+        createView2(db);
+
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("SELECT " + AMOUNT_INGRIDIENT_SUM_VIEW + ".id AS id, " +
+                    " (" + AMOUNT_INGRIDIENT_SUM_VIEW + ".row = " + RECIPE_INGRIDIENT_SUM_VIEW + ".row) as result " +
+                    " FROM " + AMOUNT_INGRIDIENT_SUM_VIEW + " LEFT JOIN " + RECIPE_INGRIDIENT_SUM_VIEW + " " +
+                    " ON " + AMOUNT_INGRIDIENT_SUM_VIEW + ".id = " + RECIPE_INGRIDIENT_SUM_VIEW + ".id " +
+                    " GROUP BY " + AMOUNT_INGRIDIENT_SUM_VIEW + ".id HAVING result = 1", null);
+            while (cursor.moveToNext()) {
+                Recipe r = getRecipe(db, cursor.getLong(cursor.getColumnIndex("id")));
+                recipes.add(r);
+            }
+        } finally {
+            if (null != cursor)
+                cursor.close();
+        }
+
+        return recipes;
+    }
+
+    private static void createView2(SQLiteDatabase db) {
+        db.execSQL("DROP VIEW IF EXISTS " + RECIPE_INGRIDIENT_SUM_VIEW + ";");
+        db.execSQL("CREATE VIEW " + RECIPE_INGRIDIENT_SUM_VIEW + " AS SELECT " +
+                " air." + AmountInRecipeHelper.ID_RECIPE + " as id, COUNT(air." + AmountInRecipeHelper.ID_RECIPE + ") " +
+                " as 'row' FROM " + AmountInRecipeHelper.TABLE + " AS air " +
+                " LEFT JOIN " + RecipeHelper.TABLE + " AS r ON air." + AmountInRecipeHelper.ID_RECIPE +
+                " = r." + RecipeHelper.ID + " GROUP BY air." + AmountInRecipeHelper.ID_RECIPE);
+    }
+
+    private static void createView1(SQLiteDatabase db, long[] ids) {
+        String idsString = " ";
+        for (Long id : ids) {
+            idsString += "'" + String.valueOf(id) + "', ";
+        }
+        idsString = idsString.substring(0, idsString.lastIndexOf(','));
+        db.execSQL("DROP VIEW IF EXISTS " + AMOUNT_INGRIDIENT_SUM_VIEW + ";");
+        db.execSQL("CREATE VIEW " + AMOUNT_INGRIDIENT_SUM_VIEW + " AS SELECT " +
+                " air." + AmountInRecipeHelper.ID_RECIPE + " AS id, COUNT(air." + AmountInRecipeHelper.ID_RECIPE + ") AS 'row' " +
+                " FROM " + AmountInRecipeHelper.TABLE + " AS air LEFT JOIN " + AmountHelper.TABLE +
+                " AS a ON air." + AmountInRecipeHelper.ID_AMOUNT + " = a." + AmountHelper.ID + " WHERE " +
+                " a." + AmountHelper.ID_INGRIDIENTS + " IN (" + idsString + ") " +
+                " GROUP BY air." + AmountInRecipeHelper.ID_RECIPE + "");
     }
 }

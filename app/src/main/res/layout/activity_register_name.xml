@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:hint="@string/text_hint_name"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:hint="@string/text_hint_password"
+        android:inputType="textPassword"
+        android:singleLine="true" />
+
+    <EditText
+        android:id="@+id/etPasswordConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:hint="@string/text_hint_password_confirm"
+        android:inputType="textPassword"
+        android:singleLine="true" />
+
+    <Button
+        android:id="@+id/btnRegisterName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/button_login_register_name"
+        android:textSize="@dimen/default_text_size" />
+
+</LinearLayout>
