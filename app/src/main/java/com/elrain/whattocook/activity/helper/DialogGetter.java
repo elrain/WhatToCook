@@ -94,6 +94,16 @@ public class DialogGetter {
         return builder.create();
     }
 
+    public static AlertDialog noInternetDialogSecond(Context context, DialogInterface.OnClickListener listener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(context.getString(R.string.dialog_title_internet));
+        builder.setMessage(context.getString(R.string.dialog_message_no_internet));
+        builder.setPositiveButton(context.getString(R.string.dialog_button_positive_yes), listener);
+        builder.setNegativeButton(context.getString(R.string.dialog_button_negative_no), listener);
+        return builder.create();
+    }
+
     public static AlertDialog incorrectCredentials(Context context){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setCancelable(false);
@@ -127,6 +137,16 @@ public class DialogGetter {
         builder.setTitle(context.getString(R.string.dialog_title_registration));
         builder.setMessage(context.getString(R.string.dialog_message_user_already_exists));
         builder.setNegativeButton(context.getString(R.string.dialog_button_close), CANCEL_LISTENER);
+        return builder.create();
+    }
+
+    public static AlertDialog logoutDilog(Context context, DialogInterface.OnClickListener listener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(context.getString(R.string.dialog_title_logout));
+        builder.setMessage(context.getString(R.string.dialog_message_logout));
+        builder.setPositiveButton(context.getString(R.string.dialog_button_positive_yes), listener);
+        builder.setNegativeButton(context.getString(R.string.dialog_button_negative_no), CANCEL_LISTENER);
         return builder.create();
     }
 }

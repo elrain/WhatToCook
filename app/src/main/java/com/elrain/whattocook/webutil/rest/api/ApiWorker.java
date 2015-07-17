@@ -16,6 +16,7 @@ import com.elrain.whattocook.message.CommentsMessage;
 import com.elrain.whattocook.message.CommonMessage;
 import com.elrain.whattocook.webutil.rest.RestApi;
 import com.elrain.whattocook.webutil.rest.RestHelper;
+import com.elrain.whattocook.webutil.rest.body.CommentBody;
 import com.elrain.whattocook.webutil.rest.body.UserBody;
 import com.elrain.whattocook.webutil.rest.response.CommentsResponse;
 import com.elrain.whattocook.webutil.rest.response.InitDataResponse;
@@ -147,6 +148,21 @@ public class ApiWorker {
             @Override
             public void failure(RetrofitError error) {
 
+            }
+        });
+    }
+
+    public void sendComment(CommentBody comment) {
+        mApi.addComment(comment, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                if (response.getStatus() == 200)
+                    EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.COMMENT_SENT));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.ERROR_COMMENT_SNET, error));
             }
         });
     }

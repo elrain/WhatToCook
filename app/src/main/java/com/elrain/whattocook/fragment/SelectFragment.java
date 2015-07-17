@@ -80,8 +80,8 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
                 for(long id : mSelected)
                     array[i++] = id;
                 bundle.putLongArray(INGRIDIENTS, array);
-                ((MainActivity)getActivity()).changeFragment(MainActivity.RECIPES, bundle);
-//                EventBus.getDefault().post(new ChangeFragmentMessage(MainActivity.RECIPES, bundle));
+//                ((MainActivity)getActivity()).changeFragment(MainActivity.RECIPES, bundle);
+                EventBus.getDefault().post(new ChangeFragmentMessage(MainActivity.RECIPES, bundle));
                 break;
         }
     }

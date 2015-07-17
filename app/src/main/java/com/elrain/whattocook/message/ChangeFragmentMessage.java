@@ -7,13 +7,7 @@ import android.os.Bundle;
  */
 public class ChangeFragmentMessage {
     public final String mFragmentTag;
-    public boolean isRecipeSearch;
-    public Bundle mBundle;
-
-    public ChangeFragmentMessage(String mFragmentTag, boolean isRecipeSearch) {
-        this.isRecipeSearch = isRecipeSearch;
-        this.mFragmentTag = mFragmentTag;
-    }
+    public final Bundle mBundle;
 
     public ChangeFragmentMessage(String mFragmentTag, Bundle mBundle) {
         this.mFragmentTag = mFragmentTag;

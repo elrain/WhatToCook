@@ -19,6 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/activity_horizontal_margin"
         android:hint="@string/text_hint_password"
+        android:drawableRight="@android:drawable/ic_menu_view"
         android:inputType="textPassword"
         android:singleLine="true" />
 
@@ -28,6 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/activity_horizontal_margin"
         android:hint="@string/text_hint_password_confirm"
+        android:drawableRight="@android:drawable/ic_menu_view"
         android:inputType="textPassword"
         android:singleLine="true" />
 

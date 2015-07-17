@@ -5,9 +5,10 @@
 
     <ListView
         android:id="@+id/lvComments"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/btnLeaveComment" />
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/etComment" />
 
     <TextView
         android:id="@+id/tvNoComments"
@@ -18,6 +19,14 @@
         android:textSize="@dimen/no_items_text_size"
         android:textStyle="italic"
         android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/etComment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_above="@+id/btnLeaveComment"
+        android:textSize="@dimen/default_text_size" />
 
     <Button
         android:id="@+id/btnLeaveComment"

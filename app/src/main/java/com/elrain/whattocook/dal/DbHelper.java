@@ -1,6 +1,7 @@
 package com.elrain.whattocook.dal;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteCursorDriver;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 

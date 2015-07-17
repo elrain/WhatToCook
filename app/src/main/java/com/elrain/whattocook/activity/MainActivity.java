@@ -3,6 +3,8 @@ package com.elrain.whattocook.activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,6 +19,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.elrain.whattocook.R;
+import com.elrain.whattocook.activity.helper.DialogGetter;
 import com.elrain.whattocook.adapter.NamedAdapter;
 import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dal.helper.DishTypeHelper;
@@ -236,7 +239,19 @@ public class MainActivity extends ActionBarActivity {
         if (mFragmentMap.get(mLastTag) instanceof DetailsFragment
                 || mFragmentMap.get(mLastTag) instanceof CommentsFragment)
             changeFragment(RECIPES, null);
-        else if (mFragmentMap.get(mLastTag) instanceof RecipeFragment)
-            super.onBackPressed();
+        else if (mFragmentMap.get(mLastTag) instanceof RecipeFragment) {
+            if (Preferences.getInstance(MainActivity.this).getUserType() != 3) {
+                DialogGetter.logoutDilog(MainActivity.this, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                        MainActivity.this.finish();
+                    }
+                }).show();
+            } else {
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                MainActivity.this.finish();
+            }
+        }
     }
 }

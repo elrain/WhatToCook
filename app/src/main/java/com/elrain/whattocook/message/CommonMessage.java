@@ -24,7 +24,9 @@ public class CommonMessage {
         LOGIN_ACCEPTED,
         API_ERROR,
         USER_REGISTERED,
+        COMMENT_SENT,
 
-        ERROR_USER_EXISTS
+        ERROR_USER_EXISTS,
+        ERROR_COMMENT_SNET
     }
 }

@@ -10,6 +10,7 @@
     <string name="dialog_title_recipe">Рецепты</string>
     <string name="dialog_title_login">Авторизация</string>
     <string name="dialog_title_registration">Регистрация</string>
+    <string name="dialog_title_logout">Выход</string>
     <string name="dialog_title_internet">Соединение</string>
     <string name="dialog_title_input_quantity">Введите количество</string>
 
@@ -20,7 +21,9 @@
     <string name="dialog_message_server_unavailable">Сервер недотупен. Повторите попытку позже.</string>
     <string name="dialog_message_user_registered">Пользователь зарегестрирован.</string>
     <string name="dialog_message_user_already_exists">Пользователь с таким именем существует.</string>
+    <string name="dialog_message_logout">Вы уверенны что хотите выйти?</string>
     <string name="dialog_message_getting_comments">Загружаются коментарии. Подождите пожалуйста.</string>
+    <string name="dialog_message_sending_comment">Коментарии отправляется. Подождите пожалуйста.</string>
 
     <string name="dialog_button_positive_yes">Да</string>
     <string name="dialog_button_negative_no">Нет</string>
@@ -43,6 +46,7 @@
     <string name="button_show_recipe_comments">Показать коментарии</string>
     <string name="button_login">Войти</string>
     <string name="button_leave_comments">Оставить коментарий</string>
+    <string name="button_leave_comments_send">Отправить</string>
     <string name="button_login_noname">Войти анонимно</string>
     <string name="button_login_register_name">Регистрация</string>
     <string name="button_show_all_recipes">Показать все рецепты</string>
@@ -54,6 +58,7 @@
     <string name="text_error_empty">Заполните</string>
     <string name="text_error_not_same">Пароли не совпадают</string>
     <string name="text_error_length_low" formatted="true">Длинна &#60; %d </string>
+    <string name="text_error_one_upper_symbol">Ни одиного символ A-Z</string>
     <string name="text_error_length_high" formatted="true">Длинна &#62; %d </string>
 
 </resources>

@@ -72,7 +72,7 @@ public class SplashScreenActivity extends Activity {
     public void onEventMainThread(CommonMessage message) {
         switch (message.mMessageEvent) {
             case DATA_LOAD_FINISHED:
-                startActivity(new Intent(SplashScreenActivity.this, MainActivity.class));
+                startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
                 SplashScreenActivity.this.finish();
                 break;
             case DATA_LOAD_FAIL:

@@ -13,6 +13,9 @@ public class Preferences {
     private static final String KEY_DISH = "dish";
     private static final String KEY_USER_NAME = "userName";
     private static final String KEY_USER_TYPE = "userType";
+    private static final String KEY_USER_ID = "userId";
+    private static final String ID_WASN_T_SET = "Id wasn't set";
+    private static final String USER_NAME_WASN_T_SET = "User name wasn't set";
     private static Preferences mInstance;
     private final SharedPreferences mPreferences;
 
@@ -42,18 +45,30 @@ public class Preferences {
     }
 
     public String getUserName() {
-        return mPreferences.getString(KEY_USER_NAME, null);
+        String name = mPreferences.getString(KEY_USER_NAME, null);
+        if (null != name) return mPreferences.getString(KEY_USER_NAME, null);
+        else throw new IllegalArgumentException(USER_NAME_WASN_T_SET);
     }
 
     public void setUserName(String name) {
         mPreferences.edit().putString(KEY_USER_NAME, name).apply();
     }
 
-    public long  getUserType() {
+    public long getUserType() {
         return mPreferences.getLong(KEY_USER_TYPE, 2);
     }
 
     public void setUserType(long type) {
         mPreferences.edit().putLong(KEY_USER_TYPE, type).apply();
+    }
+
+    public long getUserId() {
+        long id = mPreferences.getLong(KEY_USER_ID, 0);
+        if (id != 0) return id;
+        else throw new IllegalArgumentException(ID_WASN_T_SET);
+    }
+
+    public void setUserId(long userId) {
+        mPreferences.edit().putLong(KEY_USER_ID, userId).apply();
     }
 }

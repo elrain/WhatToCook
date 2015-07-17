@@ -13,12 +13,17 @@ import com.elrain.whattocook.R;
 import com.elrain.whattocook.activity.helper.DialogGetter;
 import com.elrain.whattocook.activity.helper.ProgressBarDialogBuilder;
 import com.elrain.whattocook.message.CommonMessage;
+import com.elrain.whattocook.util.Crypting;
 import com.elrain.whattocook.util.NetworkUtil;
+import com.elrain.whattocook.util.OnLongPress;
 import com.elrain.whattocook.util.Preferences;
 import com.elrain.whattocook.webutil.rest.api.ApiWorker;
 import com.elrain.whattocook.webutil.rest.api.Errors;
 import com.elrain.whattocook.webutil.rest.body.UserBody;
 import com.elrain.whattocook.webutil.rest.response.UserInfoResponse;
+
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
 
 import de.greenrobot.event.EventBus;
 
@@ -40,13 +45,25 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         mPreferences = Preferences.getInstance(this);
         mProgressDialog = new ProgressBarDialogBuilder(this, getString(R.string.dialog_message_logining)).build();
         mEtName = (EditText) findViewById(R.id.etName);
-        mEtPassword = (EditText) findViewById(R.id.etPassword);
+        initEtPassword();
+        try {
+            mEtName.setText(mPreferences.getUserName());
+            mEtPassword.requestFocus();
+        } catch (IllegalArgumentException e) {
+            mEtName.requestFocus();
+        }
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this);
         Button btnLoginNoname = (Button) findViewById(R.id.btnNoName);
         btnLoginNoname.setOnClickListener(this);
         Button btnRegisterNew = (Button) findViewById(R.id.btnRegisterName);
         btnRegisterNew.setOnClickListener(this);
+    }
+
+    private void initEtPassword() {
+        mEtPassword = (EditText) findViewById(R.id.etPassword);
+        mEtPassword.setLongClickable(false);
+        mEtPassword.setOnTouchListener(new OnLongPress(this, mEtPassword).getListener());
     }
 
     @Override
@@ -61,6 +78,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             UserInfoResponse userInfoResponse = (UserInfoResponse) message.messageObject;
             mPreferences.setUserName(mEtName.getText().toString());
             mPreferences.setUserType(userInfoResponse.getIdUserType());
+            mPreferences.setUserId(userInfoResponse.getIdUser());
             LoginActivity.this.finish();
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         } else if (message.mMessageEvent == CommonMessage.MessageEvent.API_ERROR) {
@@ -90,6 +108,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                     login(name, password);
                 break;
             case R.id.btnNoName:
+                mPreferences.setUserType(3);
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 LoginActivity.this.finish();
                 break;
@@ -103,7 +122,14 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         if (NetworkUtil.isNetworkOnline(this)) {
             mProgressDialog.show();
             ApiWorker apiWorker = ApiWorker.getInstance(LoginActivity.this);
-            UserBody body = new UserBody(name, password);
+            UserBody body = null;
+            try {
+                body = new UserBody(name, Crypting.encrypt(password));
+            } catch (GeneralSecurityException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
             apiWorker.login(body);
         } else DialogGetter.noInternetDialog(this, new DialogInterface.OnClickListener() {
             @Override
