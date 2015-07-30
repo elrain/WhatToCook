@@ -33,8 +33,6 @@ import de.greenrobot.event.EventBus;
  */
 public class SelectFragment extends Fragment implements View.OnClickListener {
     public static final String INGRIDIENTS = "ingridients";
-    private ListView mLvMyIngridients;
-    private ListView mLvAddIngridients;
     private IngridientAdapter mAddIngridientsAdapter;
     private IngridientAdapter mSelectedIngridientsAdapter;
     private EditText mEtSearch;
@@ -57,13 +55,13 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mLvMyIngridients = (ListView) view.findViewById(R.id.lvMyItems);
-        mLvAddIngridients = (ListView) view.findViewById(R.id.lvAddItems);
+        ListView lvMyIngridients = (ListView) view.findViewById(R.id.lvMyItems);
+        ListView lvAddIngridients = (ListView) view.findViewById(R.id.lvAddItems);
         mAddIngridientsAdapter = new IngridientAdapter(getActivity(), new ArrayList<IngridientsEntity>());
         mSelectedIngridientsAdapter = new IngridientAdapter(getActivity(), new ArrayList<IngridientsEntity>());
-        mLvAddIngridients.setAdapter(mAddIngridientsAdapter);
-        mLvMyIngridients.setAdapter(mSelectedIngridientsAdapter);
-        mLvAddIngridients.setOnItemClickListener(new AddElementListener());
+        lvAddIngridients.setAdapter(mAddIngridientsAdapter);
+        lvMyIngridients.setAdapter(mSelectedIngridientsAdapter);
+        lvAddIngridients.setOnItemClickListener(new AddElementListener());
         mEtSearch = (EditText) view.findViewById(R.id.etSearch);
         mEtSearch.addTextChangedListener(new SearchWatcher());
         Button btnSearch = (Button) view.findViewById(R.id.btnSearchRecipe);
@@ -80,7 +78,6 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
                 for(long id : mSelected)
                     array[i++] = id;
                 bundle.putLongArray(INGRIDIENTS, array);
-//                ((MainActivity)getActivity()).changeFragment(MainActivity.RECIPES, bundle);
                 EventBus.getDefault().post(new ChangeFragmentMessage(MainActivity.RECIPES, bundle));
                 break;
         }

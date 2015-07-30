@@ -118,7 +118,7 @@ public class DialogGetter {
         builder.setCancelable(false);
         builder.setTitle(context.getString(R.string.dialog_title_login));
         builder.setMessage(context.getString(R.string.dialog_message_server_unavailable));
-        builder.setNegativeButton(context.getString(R.string.dialog_button_cancel), CANCEL_LISTENER);
+        builder.setNegativeButton(context.getString(R.string.dialog_button_close), CANCEL_LISTENER);
         return builder.create();
     }
 

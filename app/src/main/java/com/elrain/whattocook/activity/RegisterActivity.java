@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,6 +45,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
         btnRegisterName.setOnClickListener(this);
         mEtName = (EditText) findViewById(R.id.etName);
         mEtName.addTextChangedListener(new LoginWatcher());
+        mEtName.setLongClickable(false);
         initEtPasswords();
     }
 
@@ -83,22 +85,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                     }
                 }
                 break;
-        }
-    }
-
-    private class LoginWatcher implements TextWatcher{
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
         }
     }
 
@@ -152,9 +138,10 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                     break;
                 }
             }
-            if(!isOneUpper){
+            if (!isOneUpper) {
                 mEtPassword.setError(getString(R.string.text_error_one_upper_symbol));
-                return true;}
+                return true;
+            }
         }
         return false;
     }
@@ -174,6 +161,27 @@ public class RegisterActivity extends Activity implements View.OnClickListener {
                 DialogGetter.userAlreadyExists(this).show();
             default:
                 break;
+        }
+    }
+
+    private class LoginWatcher implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            String result = s.toString().replaceAll(" ", "");
+            if (!s.toString().equals(result)) {
+                mEtName.setText(result);
+                mEtName.setSelection(result.length());
+            }
         }
     }
 }

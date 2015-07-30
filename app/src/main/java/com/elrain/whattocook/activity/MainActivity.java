@@ -252,6 +252,7 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 MainActivity.this.finish();
             }
-        }
+        } else if (mFragmentMap.get(mLastTag) instanceof SelectFragment)
+            changeFragment(RECIPES, null);
     }
 }
