@@ -6,10 +6,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.elrain.whattocook.dao.Recipe;
-import com.elrain.whattocook.dao.RecipeEntity;
 import com.elrain.whattocook.dao.RecipeIngridientsEntity;
 import com.elrain.whattocook.util.ImageUtil;
 import com.elrain.whattocook.util.Preferences;
+import com.elrain.whattocook.webutil.rest.response.RecipeResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +27,9 @@ public class RecipeHelper {
     private static final String ID_DISH_TYPE = "idDishType";
     private static final String ID_KITCHEN_TYPE = "idKitchenType";
     private static final String IMAGE = "image";
+    private static final String IS_SAVED = "isSaved";
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "
-            + NAME + " VARCHAR (120) NOT NULL, " + DESCRIPTION + " TEXT NOT NULL, " + COOK_TIME + " INTEGER DEFAULT (0), " + IMAGE + " TEXT, "
+            + NAME + " VARCHAR (120) NOT NULL, " + DESCRIPTION + " TEXT NOT NULL, " + IS_SAVED + " BOOLEAN, " + COOK_TIME + " INTEGER DEFAULT (0), " + IMAGE + " TEXT, "
             + ID_DISH_TYPE + " INTEGER REFERENCES " + DishTypeHelper.TABLE + " (" + DishTypeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL, "
             + ID_KITCHEN_TYPE + " INTEGER REFERENCES " + KitchenTypeHelper.TABLE + " (" + KitchenTypeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL);";
     private static final String AMOUNT_INGRIDIENT_SUM_VIEW = "v1";
@@ -51,43 +52,46 @@ public class RecipeHelper {
         return 0;
     }
 
-    public static void add(SQLiteDatabase db, Context context, List<RecipeEntity> recipes) {
-        String filePath = context.getExternalFilesDir(null) != null ? context.getExternalFilesDir(null).getAbsolutePath() : context.getFilesDir().getAbsolutePath();
-        db.beginTransaction();
+    public static void add(SQLiteDatabase db, Context context, RecipeResponse recipe) {
+        if (!isRecipeExist(db, recipe.getIdRecipe())) {
+            String filePath = context.getExternalFilesDir(null) != null ? context.getExternalFilesDir(null).getAbsolutePath() : context.getFilesDir().getAbsolutePath();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(ID, recipe.getIdRecipe());
+            contentValues.put(NAME, recipe.getName());
+            contentValues.put(DESCRIPTION, recipe.getDescription());
+            contentValues.put(COOK_TIME, recipe.getCookTime());
+            contentValues.put(ID_KITCHEN_TYPE, recipe.getKitchen().getIdKitchenType());
+            contentValues.put(ID_DISH_TYPE, recipe.getDishType().getIdDishType());
+            contentValues.put(IMAGE, ImageUtil.saveImage(recipe.getIdRecipe(), recipe.getImage(), filePath));
+            db.insert(TABLE, null, contentValues);
+        }
+    }
+
+    private static boolean isRecipeExist(SQLiteDatabase db, long id) {
+        Cursor cursor = null;
         try {
-            for (RecipeEntity no : recipes) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(ID, no.getId());
-                contentValues.put(NAME, no.getName());
-                contentValues.put(DESCRIPTION, no.getDescription());
-                contentValues.put(COOK_TIME, no.getCookTime());
-                contentValues.put(ID_KITCHEN_TYPE, no.getIdKitchenType());
-                contentValues.put(ID_DISH_TYPE, no.getIdDishType());
-                contentValues.put(IMAGE, ImageUtil.saveImage(no.getId(), no.getImage(), filePath));
-                db.insert(TABLE, null, contentValues);
-            }
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
+            cursor = db.query(TABLE, new String[]{ID}, ID + " = ? ", new String[]{String.valueOf(id)}, null, null, null);
+            return cursor.moveToNext();
         } finally {
-            db.endTransaction();
+            if (null != cursor)
+                cursor.close();
         }
     }
 
     public static List<Recipe> getAllRecipes(SQLiteDatabase db, Preferences preferences) {
         List<Recipe> result = new ArrayList<>();
-        Cursor recipeCursor = null;
+        Cursor cursor = null;
         String where = generateWhere(preferences);
         try {
-            recipeCursor = db.rawQuery("SELECT re." + ID + ", re." + IMAGE + ", re." + NAME + ", re."
+            cursor = db.rawQuery("SELECT re." + ID + ", re." + IS_SAVED + ", re." + IMAGE + ", re." + NAME + ", re."
                     + DESCRIPTION + ", re." + COOK_TIME + ", kt." + KitchenTypeHelper.NAME + " as kt" + NAME +
                     ", dt." + DishTypeHelper.NAME + " as dt" + NAME +
                     " FROM " + TABLE + " as re LEFT JOIN " + KitchenTypeHelper.TABLE + " as kt on re." + ID_KITCHEN_TYPE + " = kt." + KitchenTypeHelper.ID +
                     " LEFT JOIN " + DishTypeHelper.TABLE + " as dt on re." + ID_DISH_TYPE + " = dt." + DishTypeHelper.ID + " " + where + ";", null);
-            while (recipeCursor.moveToNext()) {
+            while (cursor.moveToNext()) {
                 Cursor ingridientsCursor = null;
                 try {
-                    long id = recipeCursor.getLong(recipeCursor.getColumnIndex(ID));
+                    long id = cursor.getLong(cursor.getColumnIndex(ID));
                     List<RecipeIngridientsEntity> ingridients = new ArrayList<>();
                     ingridientsCursor = db.rawQuery("SELECT a." + AmountHelper.COUNT + ", i." + IngridientsHelper.NAME + " as i" + NAME +
                             ", at." + AmountTypeHelper.NAME + " as at" + NAME + " FROM " + AmountInRecipeHelper.TABLE + " as air " +
@@ -101,10 +105,10 @@ public class RecipeHelper {
                                 ingridientsCursor.getString(ingridientsCursor.getColumnIndex("at" + NAME)));
                         ingridients.add(ingridient);
                     }
-                    Recipe r = new Recipe(recipeCursor.getLong(recipeCursor.getColumnIndex(ID)), recipeCursor.getString(recipeCursor.getColumnIndex(NAME)),
-                            recipeCursor.getString(recipeCursor.getColumnIndex(DESCRIPTION)), recipeCursor.getInt(recipeCursor.getColumnIndex(COOK_TIME)),
-                            recipeCursor.getString(recipeCursor.getColumnIndex("dt" + NAME)), recipeCursor.getString(recipeCursor.getColumnIndex("kt" + NAME)),
-                            recipeCursor.getString(recipeCursor.getColumnIndex(IMAGE)), ingridients);
+                    Recipe r = new Recipe(cursor.getLong(cursor.getColumnIndex(ID)), cursor.getString(cursor.getColumnIndex(NAME)),
+                            cursor.getString(cursor.getColumnIndex(DESCRIPTION)), cursor.getInt(cursor.getColumnIndex(COOK_TIME)),
+                            cursor.getString(cursor.getColumnIndex("dt" + NAME)), cursor.getString(cursor.getColumnIndex("kt" + NAME)),
+                            cursor.getString(cursor.getColumnIndex(IMAGE)), cursor.getInt(cursor.getColumnIndex(IS_SAVED)) == 1, ingridients);
                     result.add(r);
 
                 } finally {
@@ -113,8 +117,8 @@ public class RecipeHelper {
                 }
             }
         } finally {
-            if (null != recipeCursor)
-                recipeCursor.close();
+            if (null != cursor)
+                cursor.close();
         }
 
         return result;
@@ -134,14 +138,14 @@ public class RecipeHelper {
     }
 
     public static Recipe getRecipe(SQLiteDatabase db, long recipeId) {
-        Cursor recipeCursor = null;
+        Cursor cursor = null;
         Recipe result = null;
         try {
-            recipeCursor = db.rawQuery("SELECT re." + ID + ", re." + IMAGE + ", re." + NAME + ", re." + DESCRIPTION + ", re." + COOK_TIME + ", kt." + KitchenTypeHelper.NAME + " as kt" + NAME +
+            cursor = db.rawQuery("SELECT re." + ID + ", re." + IS_SAVED + ", re." + IMAGE + ", re." + NAME + ", re." + DESCRIPTION + ", re." + COOK_TIME + ", kt." + KitchenTypeHelper.NAME + " as kt" + NAME +
                     ", dt." + DishTypeHelper.NAME + " as dt" + NAME + " FROM " + TABLE + " as re LEFT JOIN " + KitchenTypeHelper.TABLE + " as kt on re." + ID_KITCHEN_TYPE + " = kt." + KitchenTypeHelper.ID +
                     "                          LEFT JOIN " + DishTypeHelper.TABLE + " as dt on re." + ID_DISH_TYPE + " = dt." + DishTypeHelper.ID +
                     " WHERE re." + ID + " = ?;", new String[]{String.valueOf(recipeId)});
-            if (recipeCursor.moveToNext()) {
+            if (cursor.moveToNext()) {
                 Cursor ingridientsCursor = null;
                 try {
                     List<RecipeIngridientsEntity> ingridients = new ArrayList<>();
@@ -157,18 +161,18 @@ public class RecipeHelper {
                                 ingridientsCursor.getString(ingridientsCursor.getColumnIndex("at" + NAME)));
                         ingridients.add(ingridient);
                     }
-                    result = new Recipe(recipeCursor.getLong(recipeCursor.getColumnIndex(ID)), recipeCursor.getString(recipeCursor.getColumnIndex(NAME)),
-                            recipeCursor.getString(recipeCursor.getColumnIndex(DESCRIPTION)), recipeCursor.getInt(recipeCursor.getColumnIndex(COOK_TIME)),
-                            recipeCursor.getString(recipeCursor.getColumnIndex("dt" + NAME)), recipeCursor.getString(recipeCursor.getColumnIndex("kt" + NAME)),
-                            recipeCursor.getString(recipeCursor.getColumnIndex(IMAGE)), ingridients);
+                    result = new Recipe(cursor.getLong(cursor.getColumnIndex(ID)), cursor.getString(cursor.getColumnIndex(NAME)),
+                            cursor.getString(cursor.getColumnIndex(DESCRIPTION)), cursor.getInt(cursor.getColumnIndex(COOK_TIME)),
+                            cursor.getString(cursor.getColumnIndex("dt" + NAME)), cursor.getString(cursor.getColumnIndex("kt" + NAME)),
+                            cursor.getString(cursor.getColumnIndex(IMAGE)), cursor.getInt(cursor.getColumnIndex(IS_SAVED)) == 1, ingridients);
                 } finally {
                     if (null != ingridientsCursor)
                         ingridientsCursor.close();
                 }
             }
         } finally {
-            if (null != recipeCursor)
-                recipeCursor.close();
+            if (null != cursor)
+                cursor.close();
         }
 
         return result;
@@ -176,7 +180,6 @@ public class RecipeHelper {
 
     public static List<Recipe> getPossibleRecipes(SQLiteDatabase db, long[] ids) {
         List<Recipe> recipes = new ArrayList<>();
-//        ids = new long[]{10, 11, 12, 13, 14};
         createView1(db, ids);
         createView2(db);
 
@@ -222,4 +225,34 @@ public class RecipeHelper {
                 " a." + AmountHelper.ID_INGRIDIENTS + " IN (" + idsString + ") " +
                 " GROUP BY air." + AmountInRecipeHelper.ID_RECIPE + "");
     }
+
+    public static void saveUnsaveRecipe(SQLiteDatabase db, long recipeId, boolean save) {
+        ContentValues cv = new ContentValues();
+        cv.put(IS_SAVED, save ? 1 : 0);
+        db.update(TABLE, cv, ID + " =? ", new String[]{String.valueOf(recipeId)});
+    }
+
+    public static List<Recipe> getSavedRecipes(SQLiteDatabase db) {
+        Cursor cursor = null;
+        List<Recipe> result = new ArrayList<>();
+        try {
+            cursor = db.rawQuery("SELECT re." + ID + ", re." + IS_SAVED + ", re." + IMAGE + ", re." + NAME + ", re." + DESCRIPTION + ", re." + COOK_TIME + ", kt." + KitchenTypeHelper.NAME + " as kt" + NAME +
+                    ", dt." + DishTypeHelper.NAME + " as dt" + NAME + " FROM " + TABLE + " as re LEFT JOIN " + KitchenTypeHelper.TABLE + " as kt on re." + ID_KITCHEN_TYPE + " = kt." + KitchenTypeHelper.ID +
+                    "                          LEFT JOIN " + DishTypeHelper.TABLE + " as dt on re." + ID_DISH_TYPE + " = dt." + DishTypeHelper.ID +
+                    " WHERE re." + IS_SAVED + " = ?;", new String[]{String.valueOf(1)});
+            while (cursor.moveToNext()) {
+                Recipe r = new Recipe(cursor.getLong(cursor.getColumnIndex(ID)), cursor.getString(cursor.getColumnIndex(NAME)),
+                        cursor.getString(cursor.getColumnIndex(DESCRIPTION)), cursor.getInt(cursor.getColumnIndex(COOK_TIME)),
+                        cursor.getString(cursor.getColumnIndex("dt" + NAME)), cursor.getString(cursor.getColumnIndex("kt" + NAME)),
+                        cursor.getString(cursor.getColumnIndex(IMAGE)), cursor.getInt(cursor.getColumnIndex(IS_SAVED)) == 1, null);
+                result.add(r);
+            }
+        } finally {
+            if (null != cursor)
+                cursor.close();
+        }
+        return result;
+    }
+
+
 }

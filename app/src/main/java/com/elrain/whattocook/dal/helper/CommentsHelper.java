@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
  * Created by Denys.Husher on 03.06.2015.
  */
 public class CommentsHelper {
-    private static final String TABLE = "comments";
+    private static final String TABLE = "list";
     private static final String ID = "_id";
     private static final String TEXT = "text";
     private static final String TIME = "time";

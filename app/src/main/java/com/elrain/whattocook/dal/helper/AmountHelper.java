@@ -1,13 +1,10 @@
 package com.elrain.whattocook.dal.helper;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.elrain.whattocook.dal.DbHelper;
-import com.elrain.whattocook.dao.AmountEntity;
-
-import java.util.List;
+import com.elrain.whattocook.dal.CommonHelper;
+import com.elrain.whattocook.webutil.rest.response.AmountResponse;
 
 /**
  * Created by Denys.Husher on 02.06.2015.
@@ -26,22 +23,14 @@ public class AmountHelper {
         db.execSQL(CREATE_TABLE);
     }
 
-    public static void add(SQLiteDatabase db, List<AmountEntity> amounts) {
-        db.beginTransaction();
-        try {
-            for (AmountEntity no : amounts) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(ID, no.getId());
-                contentValues.put(COUNT, no.getCount());
-                contentValues.put(ID_INGRIDIENTS, no.getIdIngridient());
-                contentValues.put(ID_AMOUNT_TYPE, no.getIdAmountType());
-                db.insert(TABLE, null, contentValues);
-            }
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            db.endTransaction();
+    public static void add(SQLiteDatabase db, AmountResponse amount) {
+        if (!CommonHelper.isItemExist(db, TABLE, amount.getIdAmount())) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(ID, amount.getIdAmount());
+            contentValues.put(COUNT, amount.getCount());
+            contentValues.put(ID_INGRIDIENTS, amount.getIngridient().getIdIngridient());
+            contentValues.put(ID_AMOUNT_TYPE, amount.getAmountType().getIdAmountType());
+            db.insert(TABLE, null, contentValues);
         }
     }
 }

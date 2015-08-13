@@ -19,7 +19,7 @@ import com.elrain.whattocook.activity.helper.DialogGetter;
 import com.elrain.whattocook.activity.helper.ProgressBarDialogBuilder;
 import com.elrain.whattocook.adapter.CommentsAdapter;
 import com.elrain.whattocook.message.ChangeFragmentMessage;
-import com.elrain.whattocook.message.CommentsMessage;
+import com.elrain.whattocook.message.ListMessage;
 import com.elrain.whattocook.message.CommonMessage;
 import com.elrain.whattocook.util.NetworkUtil;
 import com.elrain.whattocook.util.Preferences;
@@ -105,12 +105,12 @@ public class CommentsFragment extends Fragment implements View.OnClickListener {
         EventBus.getDefault().unregister(this);
     }
 
-    public void onEventMainThread(CommentsMessage message) {
+    public void onEventMainThread(ListMessage message) {
         mProgressDialog.dismiss();
-        if (null != message.comments && message.comments.size() != 0)
+        if (null != message.list && message.list.size() != 0)
             mTvNoComments.setVisibility(View.GONE);
         else mTvNoComments.setVisibility(View.VISIBLE);
-        mLvComments.setAdapter(new CommentsAdapter(getActivity(), message.comments));
+        mLvComments.setAdapter(new CommentsAdapter(getActivity(), message.list));
     }
 
     public void onEventMainThread(CommonMessage message) {

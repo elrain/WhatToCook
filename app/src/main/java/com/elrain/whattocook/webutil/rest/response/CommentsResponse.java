@@ -5,24 +5,24 @@ package com.elrain.whattocook.webutil.rest.response;
  */
 public class CommentsResponse {
 
-    private long idComment;
+    private long commentId;
     private String text;
-    private String time;
+    private long time;
     private String userName;
 
-    public CommentsResponse(long idComment, String text, String time, String userName) {
-        this.idComment = idComment;
+    public CommentsResponse(long commentId, String text, long time, String userName) {
+        this.commentId = commentId;
         this.text = text;
         this.time = time;
         this.userName = userName;
     }
 
-    public long getIdComment() {
-        return idComment;
+    public long getCommentId() {
+        return commentId;
     }
 
-    public void setIdComment(long idComment) {
-        this.idComment = idComment;
+    public void setCommentId(long commentId) {
+        this.commentId = commentId;
     }
 
     public String getText() {
@@ -33,11 +33,11 @@ public class CommentsResponse {
         this.text = text;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 

@@ -22,8 +22,10 @@
     <string name="dialog_message_user_registered">Пользователь зарегестрирован.</string>
     <string name="dialog_message_user_already_exists">Пользователь с таким именем существует.</string>
     <string name="dialog_message_logout">Вы уверенны что хотите выйти?</string>
+    <string name="dialog_message_recipes_found" formatted="true">Найдено %d рецепт(ов). Хотите найти рейепты на сервере?</string>
     <string name="dialog_message_getting_comments">Загружаются коментарии. Подождите пожалуйста.</string>
     <string name="dialog_message_sending_comment">Коментарии отправляется. Подождите пожалуйста.</string>
+    <string name="dialog_message_getting_recipes">Поиск рецептов. Подождите пожалуйста.</string>
 
     <string name="dialog_button_positive_yes">Да</string>
     <string name="dialog_button_negative_no">Нет</string>
@@ -35,9 +37,13 @@
     <string name="drawer_text_dish_type">Категория</string>
     <string name="drawer_button_recipe">Рецепты</string>
     <string name="drawer_button_my_ingridients">Мои ингредиенты</string>
+    <string name="drawer_button_saved_recipes">Сохраненные рецепты</string>
+    <string name="drawer_button_comments">Коментарии</string>
 
     <string name="text_all">Все</string>
+    <string name="text_saved_recipe">Сохранен</string>
     <string name="text_no_comments">Коментариев нет</string>
+    <string name="text_no_saved_recipes">Нет сохраненных рецептов</string>
     <string name="text_my_ingridients">Мои ингредиенты</string>
     <string name="text_maybe_added_ingridients">Можно добавить</string>
 
@@ -50,6 +56,7 @@
     <string name="button_login_noname">Войти анонимно</string>
     <string name="button_login_register_name">Регистрация</string>
     <string name="button_show_all_recipes">Показать все рецепты</string>
+    <string name="button_saved_recipes">Сохраненные рецепты</string>
 
     <string name="text_hint_name">Имя</string>
     <string name="text_hint_password">Пароль</string>

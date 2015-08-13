@@ -13,6 +13,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.elrain.whattocook.R;
 import com.elrain.whattocook.adapter.ExpandRecipeAdapter;
 import com.elrain.whattocook.adapter.IngridientAmountTypesAdapter;
@@ -86,7 +88,11 @@ public class DetailsFragment extends Fragment {
         tvDescription.setText(r.getDescription());
 
         ImageView ivHolder = (ImageView) view.findViewById(R.id.ivHolder);
-        ivHolder.setImageDrawable(ImageUtil.getDrawableFromPath(r.getImage()));
+//        ivHolder.setImageDrawable(ImageUtil.getDrawableFromPath(r.getImage()));
+
+        Glide.with(getActivity()).load("http://172.20.29.73:8080/app/image/"+r.getId())
+                .skipMemoryCache(false).dontTransform().placeholder(R.drawable.ic_launcher).diskCacheStrategy(DiskCacheStrategy.NONE)
+                .error(R.drawable.ic_splash_screen).into(ivHolder);
 
         ListView lvItems = (ListView) view.findViewById(R.id.lvIngridients);
         IngridientAmountTypesAdapter adapter = new IngridientAmountTypesAdapter(getActivity(), r.getIngridients());

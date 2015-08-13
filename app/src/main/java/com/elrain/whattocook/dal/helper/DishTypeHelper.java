@@ -6,8 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.elrain.whattocook.R;
-import com.elrain.whattocook.dal.DbHelper;
+import com.elrain.whattocook.dal.CommonHelper;
 import com.elrain.whattocook.dao.NamedEntity;
+import com.elrain.whattocook.webutil.rest.response.DishTypeResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,26 +27,12 @@ public class DishTypeHelper {
         db.execSQL(CREATE_TABLE);
     }
 
-    public void add(SQLiteDatabase db,NamedEntity ingridient) {
-        ContentValues cv = new ContentValues();
-        cv.put(NAME, ingridient.getName());
-        db.insert(TABLE, null, cv);
-    }
-
-    public static void add(SQLiteDatabase db,List<NamedEntity> ingridients) {
-        db.beginTransaction();
-        try {
-            for (NamedEntity no : ingridients) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(ID, no.getId());
-                contentValues.put(NAME, no.getName());
-                db.insert(TABLE, null, contentValues);
-            }
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            db.endTransaction();
+    public static void add(SQLiteDatabase db, DishTypeResponse dishType) {
+        if (!CommonHelper.isItemExist(db, TABLE, dishType.getIdDishType())) {
+            ContentValues cv = new ContentValues();
+            cv.put(NAME, dishType.getName());
+            cv.put(ID, dishType.getIdDishType());
+            db.insert(TABLE, null, cv);
         }
     }
 

@@ -38,7 +38,7 @@ public class CommentsAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return mComments.get(position).getIdComment();
+        return mComments.get(position).getCommentId();
     }
 
     @Override

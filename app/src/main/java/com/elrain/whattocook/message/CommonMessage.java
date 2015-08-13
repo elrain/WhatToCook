@@ -25,6 +25,7 @@ public class CommonMessage {
         API_ERROR,
         USER_REGISTERED,
         COMMENT_SENT,
+        NEW_RESIPES_ADDED,
 
         ERROR_USER_EXISTS,
         ERROR_COMMENT_SNET

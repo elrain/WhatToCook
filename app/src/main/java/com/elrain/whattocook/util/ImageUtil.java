@@ -2,6 +2,8 @@ package com.elrain.whattocook.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.util.Base64;
 
@@ -13,7 +15,7 @@ import java.io.IOException;
 /**
  * Created by elrain on 08.06.15.
  */
-public class ImageUtil {
+public final class ImageUtil {
     public static final String FILE = "mainImage.jpg";
     public static final String PATH_DIVIDER = "/";
     public static final String RECIPE_FOLDER_NAME = "rec";
@@ -27,7 +29,8 @@ public class ImageUtil {
         try {
             FileOutputStream stream = new FileOutputStream(fullFilePath);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+            Bitmap resizeBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.getWidth() / 4, bitmap.getHeight() / 4, false);
+            resizeBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
             byte[] bitmapByteArray = baos.toByteArray();
             stream.write(bitmapByteArray);
             stream.close();
@@ -44,5 +47,14 @@ public class ImageUtil {
 
     public static Drawable getDrawableFromPath(String filePath){
         return Drawable.createFromPath(filePath);
+    }
+
+    public static Drawable setColor(Drawable drawable) {
+        try {
+            drawable.mutate().setColorFilter(Color.parseColor("#33691E"), PorterDuff.Mode.SRC_IN);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        return drawable;
     }
 }

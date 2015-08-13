@@ -6,8 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.elrain.whattocook.R;
-import com.elrain.whattocook.dal.DbHelper;
+import com.elrain.whattocook.dal.CommonHelper;
 import com.elrain.whattocook.dao.NamedEntity;
+import com.elrain.whattocook.webutil.rest.response.KitchenTypeResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,20 +27,12 @@ public class KitchenTypeHelper {
         db.execSQL(CREATE_TABLE);
     }
 
-    public static void add(SQLiteDatabase db, List<NamedEntity> kitchens) {
-        db.beginTransaction();
-        try {
-            for (NamedEntity no : kitchens) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(ID, no.getId());
-                contentValues.put(NAME, no.getName());
-                db.insert(TABLE, null, contentValues);
-            }
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            db.endTransaction();
+    public static void add(SQLiteDatabase db, KitchenTypeResponse kitchen) {
+        if (!CommonHelper.isItemExist(db, TABLE, kitchen.getIdKitchenType())) {
+            ContentValues cv = new ContentValues();
+            cv.put(ID, kitchen.getIdKitchenType());
+            cv.put(NAME, kitchen.getName());
+            db.insert(TABLE, null, cv);
         }
     }
 

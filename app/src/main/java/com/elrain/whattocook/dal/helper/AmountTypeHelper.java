@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.elrain.whattocook.dal.CommonHelper;
 import com.elrain.whattocook.dao.NamedEntity;
+import com.elrain.whattocook.webutil.rest.response.AmountTypeResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +25,13 @@ public class AmountTypeHelper {
         db.execSQL(CREATE_TABLE);
     }
 
-    public static void add(SQLiteDatabase db, NamedEntity ingridient) {
-        ContentValues cv = new ContentValues();
-        cv.put(NAME, ingridient.getName());
-        db.insert(TABLE, null, cv);
+    public static void add(SQLiteDatabase db, AmountTypeResponse amountType) {
+        if (!CommonHelper.isItemExist(db, TABLE, amountType.getIdAmountType())) {
+            ContentValues cv = new ContentValues();
+            cv.put(NAME, amountType.getName());
+            cv.put(ID, amountType.getIdAmountType());
+            db.insert(TABLE, null, cv);
+        }
     }
 
     public static void add(SQLiteDatabase db, List<NamedEntity> ingridients) {
@@ -69,8 +74,8 @@ public class AmountTypeHelper {
         List<NamedEntity> result = new ArrayList<>();
         try {
             cursor = db.rawQuery("SELECT at." + ID + ", at." + NAME + " " +
-                    "FROM " + TABLE + " as at LEFT JOIN " + AvialAmountTypeHelper.TABLE + " as aat on at." + ID + " = aat." + AvialAmountTypeHelper.ID_AMOUNT_TYPE + " " +
-                    "WHERE aat." + AvialAmountTypeHelper.ID_GROUP + " = " +
+                    "FROM " + TABLE + " as at LEFT JOIN " + AvailAmountTypeHelper.TABLE + " as aat on at." + ID + " = aat." + AvailAmountTypeHelper.ID_AMOUNT_TYPE + " " +
+                    "WHERE aat." + AvailAmountTypeHelper.ID_GROUP + " = " +
                     "(SELECT " + IngridientsHelper.ID_GROUP + " FROM " + IngridientsHelper.TABLE + " WHERE " + IngridientsHelper.ID + " = ?)", new String[]{String.valueOf(ingridientId)});
             while (cursor.moveToNext()) {
                 NamedEntity no = new NamedEntity();

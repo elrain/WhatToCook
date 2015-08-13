@@ -33,17 +33,20 @@ import de.greenrobot.event.EventBus;
  */
 public class SelectFragment extends Fragment implements View.OnClickListener {
     public static final String INGRIDIENTS = "ingridients";
+    public static final String INGRIDIENTS_NAMES = "ingridientsNames";
     private IngridientAdapter mAddIngridientsAdapter;
     private IngridientAdapter mSelectedIngridientsAdapter;
     private EditText mEtSearch;
     private DbHelper mDbHelper;
-    private Set<Long> mSelected;
+    private Set<Long> mSelectedIds;
+    private ArrayList<String> mSelectedNames;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mDbHelper = DbHelper.getInstance(getActivity());
-        mSelected = new HashSet<>();
+        mSelectedIds = new HashSet<>();
+        mSelectedNames = new ArrayList<>();
     }
 
     @Nullable
@@ -55,6 +58,8 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mSelectedNames.clear();
+        mSelectedIds.clear();
         ListView lvMyIngridients = (ListView) view.findViewById(R.id.lvMyItems);
         ListView lvAddIngridients = (ListView) view.findViewById(R.id.lvAddItems);
         mAddIngridientsAdapter = new IngridientAdapter(getActivity(), new ArrayList<IngridientsEntity>());
@@ -73,11 +78,12 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btnSearchRecipe:
                 Bundle bundle = new Bundle();
-                long[] array = new long[mSelected.size()];
+                long[] array = new long[mSelectedIds.size()];
                 int i=0;
-                for(long id : mSelected)
+                for(long id : mSelectedIds)
                     array[i++] = id;
                 bundle.putLongArray(INGRIDIENTS, array);
+                bundle.putStringArrayList(INGRIDIENTS_NAMES, mSelectedNames);
                 EventBus.getDefault().post(new ChangeFragmentMessage(MainActivity.RECIPES, bundle));
                 break;
         }
@@ -86,7 +92,8 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
     private class AddElementListener implements AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            mSelected.add(id);
+            mSelectedIds.add(id);
+            mSelectedNames.add(mAddIngridientsAdapter.getItem(position).getName());
             mSelectedIngridientsAdapter.addObject(IngridientsHelper.getIngridientById(mDbHelper.getReadableDatabase(), id));
             mEtSearch.setText("");
         }

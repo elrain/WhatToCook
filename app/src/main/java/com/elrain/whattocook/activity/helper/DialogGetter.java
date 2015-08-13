@@ -140,13 +140,23 @@ public class DialogGetter {
         return builder.create();
     }
 
-    public static AlertDialog logoutDilog(Context context, DialogInterface.OnClickListener listener){
+    public static AlertDialog logoutDialog(Context context, DialogInterface.OnClickListener listener){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setCancelable(false);
         builder.setTitle(context.getString(R.string.dialog_title_logout));
         builder.setMessage(context.getString(R.string.dialog_message_logout));
         builder.setPositiveButton(context.getString(R.string.dialog_button_positive_yes), listener);
         builder.setNegativeButton(context.getString(R.string.dialog_button_negative_no), CANCEL_LISTENER);
+        return builder.create();
+    }
+
+    public static AlertDialog recipesFoundDialog(Context context, int count, DialogInterface.OnClickListener listener){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(context.getString(R.string.dialog_title_recipe));
+        builder.setMessage(String.format(context.getString(R.string.dialog_message_recipes_found), count));
+        builder.setPositiveButton(context.getString(R.string.dialog_button_positive_yes), listener);
+        builder.setNegativeButton(context.getString(R.string.dialog_button_negative_no), listener);
         return builder.create();
     }
 }

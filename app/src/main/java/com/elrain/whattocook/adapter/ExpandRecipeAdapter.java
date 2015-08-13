@@ -12,6 +12,8 @@ import android.widget.TextView;
 
 import com.elrain.whattocook.R;
 import com.elrain.whattocook.activity.MainActivity;
+import com.elrain.whattocook.dal.DbHelper;
+import com.elrain.whattocook.dal.helper.RecipeHelper;
 import com.elrain.whattocook.dao.Recipe;
 import com.elrain.whattocook.dao.RecipeIngridientsEntity;
 import com.elrain.whattocook.fragment.CommentsFragment;
@@ -74,8 +76,8 @@ public class ExpandRecipeAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-        TitleViewHolder viewHolder;
+    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        final TitleViewHolder viewHolder;
         if (null == convertView) {
             convertView = mInflater.inflate(R.layout.recipe_title_view, parent, false);
             viewHolder = new TitleViewHolder();
@@ -84,6 +86,22 @@ public class ExpandRecipeAdapter extends BaseExpandableListAdapter {
             viewHolder.tvDishType = (TextView) convertView.findViewById(R.id.tvDishType);
             viewHolder.tvKitchenType = (TextView) convertView.findViewById(R.id.tvKitchenType);
             viewHolder.tvRecipeName = (TextView) convertView.findViewById(R.id.tvRecipeName);
+            viewHolder.ivSave = (ImageView) convertView.findViewById(R.id.ivAction);
+            if (getGroup(groupPosition).isSaved()) {
+                ImageUtil.setColor(viewHolder.ivSave.getDrawable());
+                viewHolder.ivSave.setOnClickListener(null);
+            } else {
+                viewHolder.ivSave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        RecipeHelper.saveUnsaveRecipe(DbHelper.getInstance(mContext).getWritableDatabase(), getGroupId(groupPosition), true);
+                        getGroup(groupPosition).setIsSaved(true);
+                        ImageUtil.setColor(viewHolder.ivSave.getDrawable());
+                        viewHolder.ivSave.setOnClickListener(null);
+                    }
+                });
+            }
+
             convertView.setTag(viewHolder);
         } else viewHolder = (TitleViewHolder) convertView.getTag();
 
@@ -96,7 +114,6 @@ public class ExpandRecipeAdapter extends BaseExpandableListAdapter {
         } else viewHolder.tvCookTime.setVisibility(View.GONE);
         viewHolder.tvKitchenType.setText(getGroup(groupPosition).getKitchenTypeName());
         viewHolder.ivHolder.setImageDrawable(ImageUtil.getDrawableFromPath(getGroup(groupPosition).getImage()));
-
         return convertView;
     }
 
@@ -145,11 +162,12 @@ public class ExpandRecipeAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
-        return false;
+        return true;
     }
 
     private static class TitleViewHolder {
         public ImageView ivHolder;
+        public ImageView ivSave;
         public TextView tvKitchenType;
         public TextView tvDishType;
         public TextView tvRecipeName;

@@ -26,28 +26,12 @@ public class SplashScreenActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         EventBus.getDefault().register(this);
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-                if (RecipeHelper.getRecipeCount(DbHelper.getInstance(SplashScreenActivity.this).getReadableDatabase()) == 0)
-                    loadData();
-                else {
-                    startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
-                    SplashScreenActivity.this.finish();
-                }
-            }
-        }.execute();
+        if (RecipeHelper.getRecipeCount(DbHelper.getInstance(SplashScreenActivity.this).getReadableDatabase()) == 0)
+            loadData();
+        else {
+            startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+            SplashScreenActivity.this.finish();
+        }
     }
 
     @Override

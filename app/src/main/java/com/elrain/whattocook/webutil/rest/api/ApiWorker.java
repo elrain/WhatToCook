@@ -6,20 +6,24 @@ import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dal.helper.AmountHelper;
 import com.elrain.whattocook.dal.helper.AmountInRecipeHelper;
 import com.elrain.whattocook.dal.helper.AmountTypeHelper;
-import com.elrain.whattocook.dal.helper.AvialAmountTypeHelper;
+import com.elrain.whattocook.dal.helper.AvailAmountTypeHelper;
 import com.elrain.whattocook.dal.helper.DishTypeHelper;
 import com.elrain.whattocook.dal.helper.GroupHelper;
 import com.elrain.whattocook.dal.helper.IngridientsHelper;
 import com.elrain.whattocook.dal.helper.KitchenTypeHelper;
 import com.elrain.whattocook.dal.helper.RecipeHelper;
-import com.elrain.whattocook.message.CommentsMessage;
+import com.elrain.whattocook.message.ListMessage;
 import com.elrain.whattocook.message.CommonMessage;
 import com.elrain.whattocook.webutil.rest.RestApi;
 import com.elrain.whattocook.webutil.rest.RestHelper;
 import com.elrain.whattocook.webutil.rest.body.CommentBody;
 import com.elrain.whattocook.webutil.rest.body.UserBody;
+import com.elrain.whattocook.webutil.rest.response.AmountResponse;
+import com.elrain.whattocook.webutil.rest.response.AmountTypeResponse;
 import com.elrain.whattocook.webutil.rest.response.CommentsResponse;
-import com.elrain.whattocook.webutil.rest.response.InitDataResponse;
+import com.elrain.whattocook.webutil.rest.response.GroupsResponse;
+import com.elrain.whattocook.webutil.rest.response.IngridientsResponse;
+import com.elrain.whattocook.webutil.rest.response.RecipeResponse;
 import com.elrain.whattocook.webutil.rest.response.UserInfoResponse;
 
 import java.util.List;
@@ -76,34 +80,39 @@ public class ApiWorker {
     }
 
     public void initData() {
-        mApi.initData(new Callback<InitDataResponse>() {
+        mApi.initData(new Callback<List<RecipeResponse>>() {
             @Override
-            public void success(InitDataResponse initDataResponse, Response response) {
-                if (null != initDataResponse)
-                    startInit(initDataResponse);
+            public void success(List<RecipeResponse> recipesResponse, Response response) {
+                if (null != recipesResponse)
+                    startInit(recipesResponse);
                 else
                     EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.DATA_LOAD_FAIL));
             }
 
             @Override
             public void failure(RetrofitError error) {
-
             }
         });
 
     }
 
-    private void startInit(InitDataResponse initDataResponse) {
-        KitchenTypeHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getKitchenTypes());
-        DishTypeHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getDishTypes());
-        GroupHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getGroups());
-        AmountTypeHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getAmountTypes());
-        IngridientsHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getIngridients());
-        AvialAmountTypeHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getAmountTypesRules());
-        AmountHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getAmounts());
-        RecipeHelper.add(mDbHelper.getWritableDatabase(), mContext, initDataResponse.getRecipes());
-        AmountInRecipeHelper.add(mDbHelper.getWritableDatabase(), initDataResponse.getAmountsInRecipes());
-
+    private void startInit(List<RecipeResponse> recipesResponse) {
+        for (RecipeResponse rr : recipesResponse) {
+            DishTypeHelper.add(mDbHelper.getWritableDatabase(), rr.getDishType());
+            KitchenTypeHelper.add(mDbHelper.getWritableDatabase(), rr.getKitchen());
+            RecipeHelper.add(mDbHelper.getWritableDatabase(), mContext, rr);
+            for (AmountResponse ar : rr.getAmounts()) {
+                IngridientsResponse ir = ar.getIngridient();
+                GroupsResponse gr = ir.getGroup();
+                GroupHelper.add(mDbHelper.getWritableDatabase(), gr);
+                IngridientsHelper.add(mDbHelper.getWritableDatabase(), ir);
+                AmountTypeResponse atr = ar.getAmountType();
+                AmountTypeHelper.add(mDbHelper.getWritableDatabase(), atr);
+                AvailAmountTypeHelper.add(mDbHelper.getWritableDatabase(), gr.getIdGroup(), atr.getIdAmountType());
+                AmountHelper.add(mDbHelper.getWritableDatabase(), ar);
+                AmountInRecipeHelper.add(mDbHelper.getWritableDatabase(), ar.getIdAmount(), rr.getIdRecipe());
+            }
+        }
         EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.DATA_LOAD_FINISHED));
     }
 
@@ -142,12 +151,13 @@ public class ApiWorker {
         mApi.getCommentsForRecipe(recipeId, new Callback<List<CommentsResponse>>() {
             @Override
             public void success(List<CommentsResponse> commentsResponses, Response response) {
-                EventBus.getDefault().post(new CommentsMessage(commentsResponses));
+                EventBus.getDefault().post(new ListMessage(commentsResponses));
             }
 
             @Override
             public void failure(RetrofitError error) {
-
+                int i = 0;
+                ++i;
             }
         });
     }
@@ -163,6 +173,22 @@ public class ApiWorker {
             @Override
             public void failure(RetrofitError error) {
                 EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.ERROR_COMMENT_SNET, error));
+            }
+        });
+    }
+
+    public void getRecipesByIngridients(String[] names){
+        mApi.getRecipesByIngridients(names, new Callback<List<RecipeResponse>>() {
+            @Override
+            public void success(List<RecipeResponse> recipeResponse, Response response) {
+                if(null != recipeResponse)
+                startInit(recipeResponse);
+                EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.NEW_RESIPES_ADDED));
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+
             }
         });
     }

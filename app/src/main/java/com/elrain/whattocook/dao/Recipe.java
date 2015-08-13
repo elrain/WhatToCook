@@ -14,9 +14,10 @@ public class Recipe {
     private String dishTypeName;
     private String kitchenTypeName;
     private String image;
+    private boolean isSaved;
     private List<RecipeIngridientsEntity> ingridients;
 
-    public Recipe(long id, String name, String description, int cookTime, String dishTypeName, String kitchenTypeName, String image, List<RecipeIngridientsEntity> ingridients) {
+    public Recipe(long id, String name, String description, int cookTime, String dishTypeName, String kitchenTypeName, String image, boolean isSaved, List<RecipeIngridientsEntity> ingridients) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -24,6 +25,7 @@ public class Recipe {
         this.dishTypeName = dishTypeName;
         this.kitchenTypeName = kitchenTypeName;
         this.image = image;
+        this.isSaved = isSaved;
         this.ingridients = ingridients;
     }
 
@@ -57,5 +59,13 @@ public class Recipe {
 
     public String getImage() {
         return image;
+    }
+
+    public boolean isSaved() {
+        return isSaved;
+    }
+
+    public void setIsSaved(boolean isSaved) {
+        this.isSaved = isSaved;
     }
 }

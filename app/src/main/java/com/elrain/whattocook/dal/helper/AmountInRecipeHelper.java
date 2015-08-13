@@ -1,14 +1,9 @@
 package com.elrain.whattocook.dal.helper;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import com.elrain.whattocook.dal.DbHelper;
-import com.elrain.whattocook.dao.ManyToManyEntity;
-import com.elrain.whattocook.dao.NamedEntity;
-
-import java.util.List;
+import com.elrain.whattocook.webutil.rest.response.AmountResponse;
 
 /**
  * Created by Denys.Husher on 03.06.2015.
@@ -20,27 +15,17 @@ public class AmountInRecipeHelper {
     public static final String ID_RECIPE = "idRecipe";
     private static final String CREATE_TABLE = "CREATE TABLE " + TABLE + " (" + ID + " INTEGER PRIMARY KEY NOT NULL, "
             + ID_AMOUNT + " INTEGER REFERENCES " + AmountHelper.TABLE + " (" + AmountHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL, "
-            + ID_RECIPE + " INTEGER REFERENCES " + RecipeHelper.TABLE + " (" + RecipeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL);";
+            + ID_RECIPE + " INTEGER REFERENCES " + RecipeHelper.TABLE + " (" + RecipeHelper.ID + ") ON DELETE CASCADE ON UPDATE NO ACTION NOT NULL, " +
+            "UNIQUE("+ID_AMOUNT+", "+ID_RECIPE+") ON CONFLICT IGNORE);";
 
     public static void createTable(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
     }
 
-    public static void add(SQLiteDatabase db, List<ManyToManyEntity> rules) {
-        db.beginTransaction();
-        try {
-            for (ManyToManyEntity no : rules) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(ID, no.getId());
-                contentValues.put(ID_RECIPE, no.getIdFirst());
-                contentValues.put(ID_AMOUNT, no.getIdSecond());
-                db.insert(TABLE, null, contentValues);
-            }
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            db.endTransaction();
-        }
+    public static void add(SQLiteDatabase db, int amountId, int recipeId) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ID_RECIPE, recipeId);
+        contentValues.put(ID_AMOUNT, amountId);
+        db.insert(TABLE, null, contentValues);
     }
 }

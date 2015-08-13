@@ -3,10 +3,11 @@ package com.elrain.whattocook.webutil.rest;
 import com.elrain.whattocook.webutil.rest.body.CommentBody;
 import com.elrain.whattocook.webutil.rest.body.UserBody;
 import com.elrain.whattocook.webutil.rest.response.CommentsResponse;
-import com.elrain.whattocook.webutil.rest.response.InitDataResponse;
+import com.elrain.whattocook.webutil.rest.response.RecipeResponse;
 import com.elrain.whattocook.webutil.rest.response.UserInfoResponse;
 
 import java.util.List;
+import java.util.Queue;
 
 import retrofit.Callback;
 import retrofit.client.Response;
@@ -15,13 +16,14 @@ import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
  * Created by elrain on 05.06.15.
  */
 public interface RestApi {
     @GET("/init")
-    void initData(Callback<InitDataResponse> callback);
+    void initData(Callback<List<RecipeResponse>> callback);
 
     @POST("/user/login")
     void login(@Body UserBody user, Callback<UserInfoResponse> callback);
@@ -29,9 +31,12 @@ public interface RestApi {
     @PUT("/user/register")
     void registerUser(@Body UserBody user, Callback<Response> callback);
 
-    @GET("/comments/{id}")
+    @GET("/list/{id}")
     void getCommentsForRecipe(@Path("id") long id, Callback<List<CommentsResponse>> callback);
 
-    @PUT("/comments/new")
+    @PUT("/list/new")
     void addComment(@Body CommentBody comment, Callback<Response> callback);
+
+    @GET("/recipe/search")
+    void getRecipesByIngridients(@Query("ingridient")String[] names, Callback<List<RecipeResponse>> callback);
 }

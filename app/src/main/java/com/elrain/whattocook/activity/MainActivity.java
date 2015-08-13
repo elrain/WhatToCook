@@ -28,6 +28,7 @@ import com.elrain.whattocook.dao.NamedEntity;
 import com.elrain.whattocook.fragment.CommentsFragment;
 import com.elrain.whattocook.fragment.DetailsFragment;
 import com.elrain.whattocook.fragment.RecipeFragment;
+import com.elrain.whattocook.fragment.SavedRecipesFragment;
 import com.elrain.whattocook.fragment.SelectFragment;
 import com.elrain.whattocook.message.ChangeFragmentMessage;
 import com.elrain.whattocook.message.CommonMessage;
@@ -42,13 +43,15 @@ public class MainActivity extends ActionBarActivity {
     public static final String RECIPES = "recipes";
     public static final String ADDING_INGRIDIENTS = "addingIngridients";
     public static final String DETAILS_INFO = "detailsInfo";
-    public static final String COMMENTS = "comments";
+    public static final String COMMENTS = "list";
+    public static final String SAVED_RECIPES = "savedRecipes";
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager mFragmentManager;
     private HashMap<String, Fragment> mFragmentMap;
     private String mLastTag;
+    private static boolean redirectOnSaved = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +108,14 @@ public class MainActivity extends ActionBarActivity {
                 changeFragment(ADDING_INGRIDIENTS, null);
             }
         });
+
+        Button btnSavedRecipes = (Button) findViewById(R.id.btnSavedRecipes);
+        btnSavedRecipes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeFragment(SAVED_RECIPES, null);
+            }
+        });
     }
 
     private void initFragmentMap() {
@@ -113,6 +124,7 @@ public class MainActivity extends ActionBarActivity {
         mFragmentMap.put(RECIPES, new RecipeFragment());
         mFragmentMap.put(DETAILS_INFO, new DetailsFragment());
         mFragmentMap.put(COMMENTS, new CommentsFragment());
+        mFragmentMap.put(SAVED_RECIPES, new SavedRecipesFragment());
     }
 
     private void initSpinners() {
@@ -228,6 +240,23 @@ public class MainActivity extends ActionBarActivity {
             mLastTag = tag;
             ft.commit();
         }
+
+        if (null != getSupportActionBar())
+            switch (tag) {
+                case ADDING_INGRIDIENTS:
+                    getSupportActionBar().setTitle(getString(R.string.drawer_button_my_ingridients));
+                    break;
+                case RECIPES:
+                    getSupportActionBar().setTitle(getString(R.string.drawer_button_recipe));
+                    break;
+                case SAVED_RECIPES:
+                    getSupportActionBar().setTitle(getString(R.string.drawer_button_saved_recipes));
+                    redirectOnSaved = true;
+                    break;
+                case COMMENTS:
+                    getSupportActionBar().setTitle(getString(R.string.drawer_button_comments));
+                    break;
+            }
     }
 
     public void onEventMainThread(ChangeFragmentMessage message) {
@@ -236,12 +265,16 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
-        if (mFragmentMap.get(mLastTag) instanceof DetailsFragment
-                || mFragmentMap.get(mLastTag) instanceof CommentsFragment)
+        if (mFragmentMap.get(mLastTag) instanceof CommentsFragment
+                || mFragmentMap.get(mLastTag) instanceof SavedRecipesFragment)
             changeFragment(RECIPES, null);
-        else if (mFragmentMap.get(mLastTag) instanceof RecipeFragment) {
+        else if (mFragmentMap.get(mLastTag) instanceof DetailsFragment) {
+            if (redirectOnSaved) changeFragment(SAVED_RECIPES, null);
+            else changeFragment(RECIPES, null);
+            redirectOnSaved = false;
+        } else if (mFragmentMap.get(mLastTag) instanceof RecipeFragment) {
             if (Preferences.getInstance(MainActivity.this).getUserType() != 3) {
-                DialogGetter.logoutDilog(MainActivity.this, new DialogInterface.OnClickListener() {
+                DialogGetter.logoutDialog(MainActivity.this, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));

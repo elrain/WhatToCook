@@ -48,6 +48,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/drawer_button_my_ingridients" />
+
+            <Button
+                android:id="@+id/btnSavedRecipes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/button_saved_recipes"/>
         </LinearLayout>
 
         <LinearLayout

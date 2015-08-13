@@ -4,7 +4,9 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.elrain.whattocook.dal.CommonHelper;
 import com.elrain.whattocook.dao.IngridientsEntity;
+import com.elrain.whattocook.webutil.rest.response.IngridientsResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,21 +27,13 @@ public class IngridientsHelper {
         db.execSQL(CREATE_TABLE);
     }
 
-    public static void add(SQLiteDatabase db, List<IngridientsEntity> ingridients) {
-        db.beginTransaction();
-        try {
-            for (IngridientsEntity no : ingridients) {
-                ContentValues contentValues = new ContentValues();
-                contentValues.put(ID, no.getId());
-                contentValues.put(NAME, no.getName());
-                contentValues.put(ID_GROUP, no.getIdGroup());
-                db.insert(TABLE, null, contentValues);
-            }
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            db.endTransaction();
+    public static void add(SQLiteDatabase db, IngridientsResponse ingridient) {
+        if (!CommonHelper.isItemExist(db, TABLE, ingridient.getIdIngridient())) {
+            ContentValues cv = new ContentValues();
+            cv.put(ID, ingridient.getIdIngridient());
+            cv.put(NAME, ingridient.getName());
+            cv.put(ID_GROUP, ingridient.getGroup().getIdGroup());
+            db.insert(TABLE, null, cv);
         }
     }
 
@@ -74,7 +68,7 @@ public class IngridientsHelper {
         Cursor cursor = null;
         try {
             cursor = db.query(TABLE, new String[]{ID, NAME, ID_GROUP}, ID + " =? ", new String[]{String.valueOf(ingridientId)}, null, null, null);
-            if(cursor.moveToNext()){
+            if (cursor.moveToNext()) {
                 return new IngridientsEntity(cursor.getLong(cursor.getColumnIndex(ID)),
                         cursor.getString(cursor.getColumnIndex(NAME)), cursor.getLong(cursor.getColumnIndex(ID_GROUP)));
             }
@@ -87,17 +81,18 @@ public class IngridientsHelper {
 
     public static List<IngridientsEntity> getIngridientsByName(SQLiteDatabase db, String likeName) {
         likeName = likeName.replaceAll("'", "''");
-        likeName = likeName.replace(likeName.charAt(0), likeName.toUpperCase().charAt(0));
+        String likeNameUpper = likeName.replace(likeName.charAt(0), likeName.toUpperCase().charAt(0));
         Cursor cursor = null;
         List<IngridientsEntity> ingridients = new ArrayList<>();
         try {
             cursor = db.rawQuery("SELECT " + ID + ", " + NAME + ", " + ID_GROUP +
-                    " FROM " + TABLE + " WHERE " + NAME + " LIKE '" + likeName + "%%'", null);
+                    " FROM " + TABLE + " WHERE " + NAME + " LIKE '" + likeName + "%%' OR " + NAME + " LIKE '" + likeNameUpper + "%%'", null);
             while (cursor.moveToNext()) {
                 IngridientsEntity entity = new IngridientsEntity(cursor.getLong(cursor.getColumnIndex(ID)),
                         cursor.getString(cursor.getColumnIndex(NAME)), cursor.getLong(cursor.getColumnIndex(ID_GROUP)));
                 ingridients.add(entity);
             }
+
         } finally {
             if (null != cursor) cursor.close();
         }
