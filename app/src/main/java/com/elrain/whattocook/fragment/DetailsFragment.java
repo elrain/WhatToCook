@@ -21,7 +21,7 @@ import com.elrain.whattocook.adapter.IngridientAmountTypesAdapter;
 import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dal.helper.RecipeHelper;
 import com.elrain.whattocook.dao.Recipe;
-import com.elrain.whattocook.util.ImageUtil;
+import com.elrain.whattocook.webutil.rest.api.Constants;
 
 /**
  * Created by elrain on 15.06.15.
@@ -88,9 +88,8 @@ public class DetailsFragment extends Fragment {
         tvDescription.setText(r.getDescription());
 
         ImageView ivHolder = (ImageView) view.findViewById(R.id.ivHolder);
-//        ivHolder.setImageDrawable(ImageUtil.getDrawableFromPath(r.getImage()));
 
-        Glide.with(getActivity()).load("http://172.20.29.73:8080/app/image/"+r.getId())
+        Glide.with(getActivity()).load(Constants.IMAGE_URL + r.getId())
                 .skipMemoryCache(false).dontTransform().placeholder(R.drawable.ic_launcher).diskCacheStrategy(DiskCacheStrategy.NONE)
                 .error(R.drawable.ic_splash_screen).into(ivHolder);
 

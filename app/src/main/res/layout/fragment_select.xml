@@ -1,12 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingBottom="@dimen/activity_vertical_margin"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"
-                android:paddingTop="@dimen/activity_vertical_margin"
-                tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:id="@+id/llSearch"
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/half_activity_horizontal_margin"
-            android:drawableRight="@android:drawable/ic_menu_search"/>
+            android:drawableRight="@android:drawable/ic_menu_search" />
     </LinearLayout>
 
     <LinearLayout
@@ -35,13 +35,13 @@
             android:layout_height="wrap_content"
             android:text="@string/text_my_ingridients"
             android:textStyle="bold"
-            android:textSize="@dimen/default_text_size"/>
+            android:textSize="@dimen/default_text_size" />
 
         <ListView
             android:id="@+id/lvMyItems"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/llSearch"/>
+            android:layout_below="@+id/llSearch" />
     </LinearLayout>
 
     <LinearLayout
@@ -57,13 +57,13 @@
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:text="@string/text_maybe_added_ingridients"
-            android:textSize="@dimen/default_text_size"/>
+            android:textSize="@dimen/default_text_size" />
 
         <ListView
             android:id="@+id/lvAddItems"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/llSearch"/>
+            android:layout_below="@+id/llSearch" />
     </LinearLayout>
 
     <Button
@@ -72,6 +72,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/llMyIngridients"
         android:text="@string/button_search_ingridients"
-        android:textSize="@dimen/default_text_size"/>
+        android:textSize="@dimen/default_text_size" />
 
 </RelativeLayout>

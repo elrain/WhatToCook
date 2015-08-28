@@ -1,5 +1,7 @@
 package com.elrain.whattocook.webutil.rest.api;
 
+import android.os.Environment;
+
 /**
  * Created by elrain on 22.06.15.
  */
@@ -18,4 +20,10 @@ public class Constants {
     public static final int RESPONSE_NOT_FOUND = 404;
     public static final int RESPONSE_STATUS_ALREADY_SET = 409;
     public static final int RESPONSE_OK = 200;
+
+    public static final String SERVER_URL = "http://172.20.29.73:8080/app";
+    //    public static final String SERVER_URL = "http://172.20.29.73:8080/WhatToCook/app";
+    public static final String IMAGE_URL = "http://172.20.29.73:8080/app/file/image/";
+
+    public static final String PDF_LOCATION = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + "%s.pdf";
 }

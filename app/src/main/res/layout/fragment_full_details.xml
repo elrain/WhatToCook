@@ -74,11 +74,12 @@
         android:id="@+id/lvIngridients"
         android:layout_width="match_parent"
         android:animateLayoutChanges="true"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp" android:background="@android:color/darker_gray"/>
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
 
     <ScrollView
         android:layout_width="match_parent"

@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="horizontal"
-              android:weightSum="60">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:weightSum="60">
 
     <TextView
         android:id="@+id/tvName"
         android:layout_width="0dp"
         android:textSize="@dimen/default_text_size"
         android:layout_height="match_parent"
-        android:layout_weight="45"/>
+        android:layout_weight="45" />
 
     <TextView
         android:id="@+id/tvQuantityAndType"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="15"
-        android:gravity="center"/>
+        android:gravity="center" />
 
 </LinearLayout>

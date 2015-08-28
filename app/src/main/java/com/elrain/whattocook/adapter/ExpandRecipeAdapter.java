@@ -1,6 +1,7 @@
 package com.elrain.whattocook.adapter;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.elrain.whattocook.R;
 import com.elrain.whattocook.activity.MainActivity;
@@ -19,7 +21,10 @@ import com.elrain.whattocook.dao.RecipeIngridientsEntity;
 import com.elrain.whattocook.fragment.CommentsFragment;
 import com.elrain.whattocook.message.ChangeFragmentMessage;
 import com.elrain.whattocook.util.ImageUtil;
+import com.elrain.whattocook.util.PdfLoader;
+import com.elrain.whattocook.webutil.rest.api.Constants;
 
+import java.io.File;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -101,6 +106,18 @@ public class ExpandRecipeAdapter extends BaseExpandableListAdapter {
                     }
                 });
             }
+            viewHolder.ivDowload = (ImageView) convertView.findViewById(R.id.ivDownload);
+            final String fileName = getGroup(groupPosition).getName();
+            if(new File(String.format(Constants.PDF_LOCATION, fileName)).exists())
+                ImageUtil.setColor(viewHolder.ivDowload.getDrawable());
+            else
+                viewHolder.ivDowload.setBackgroundResource(android.R.drawable.ic_menu_upload);
+            viewHolder.ivDowload.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    PdfLoader.downloadPdf(mContext, getGroup(groupPosition).getId(), fileName);
+                }
+            });
 
             convertView.setTag(viewHolder);
         } else viewHolder = (TitleViewHolder) convertView.getTag();
@@ -168,6 +185,7 @@ public class ExpandRecipeAdapter extends BaseExpandableListAdapter {
     private static class TitleViewHolder {
         public ImageView ivHolder;
         public ImageView ivSave;
+        public ImageView ivDowload;
         public TextView tvKitchenType;
         public TextView tvDishType;
         public TextView tvRecipeName;

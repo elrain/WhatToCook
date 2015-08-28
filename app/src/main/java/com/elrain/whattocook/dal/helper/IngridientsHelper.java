@@ -10,6 +10,7 @@ import com.elrain.whattocook.webutil.rest.response.IngridientsResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by Denys.Husher on 02.06.2015.
@@ -79,14 +80,15 @@ public class IngridientsHelper {
         return null;
     }
 
-    public static List<IngridientsEntity> getIngridientsByName(SQLiteDatabase db, String likeName) {
+    public static List<IngridientsEntity> getIngridientsByName(SQLiteDatabase db, String likeName, Set<Long> ids) {
         likeName = likeName.replaceAll("'", "''");
         String likeNameUpper = likeName.replace(likeName.charAt(0), likeName.toUpperCase().charAt(0));
         Cursor cursor = null;
         List<IngridientsEntity> ingridients = new ArrayList<>();
+        String where = generateWhere(ids);
         try {
             cursor = db.rawQuery("SELECT " + ID + ", " + NAME + ", " + ID_GROUP +
-                    " FROM " + TABLE + " WHERE " + NAME + " LIKE '" + likeName + "%%' OR " + NAME + " LIKE '" + likeNameUpper + "%%'", null);
+                    " FROM " + TABLE + " WHERE (" + NAME + " LIKE '" + likeName + "%%' OR " + NAME + " LIKE '" + likeNameUpper + "%%') AND " + ID + " NOT IN (" + where + ") ", null);
             while (cursor.moveToNext()) {
                 IngridientsEntity entity = new IngridientsEntity(cursor.getLong(cursor.getColumnIndex(ID)),
                         cursor.getString(cursor.getColumnIndex(NAME)), cursor.getLong(cursor.getColumnIndex(ID_GROUP)));
@@ -97,6 +99,16 @@ public class IngridientsHelper {
             if (null != cursor) cursor.close();
         }
         return ingridients;
+    }
+
+    private static String generateWhere(Set<Long> ids) {
+        if (ids.size() == 0)
+            return "";
+        StringBuilder sb = new StringBuilder();
+        for (long id : ids) {
+            sb.append("'").append(id).append("',");
+        }
+        return sb.toString().substring(0, sb.toString().length() - 1);
     }
 
 }

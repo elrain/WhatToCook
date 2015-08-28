@@ -7,9 +7,9 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
-    <style name="RegisterDialog" parent="Theme.AppCompat.Light.Dialog"/>
+    <style name="RegisterDialog" parent="Theme.AppCompat.Light.Dialog" />
 
-    <style name="SplashStyle" parent="Theme.AppCompat.Light.NoActionBar"/>
+    <style name="SplashStyle" parent="Theme.AppCompat.Light.NoActionBar" />
 
     <style name="TextsPref" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/default_text_size</item>

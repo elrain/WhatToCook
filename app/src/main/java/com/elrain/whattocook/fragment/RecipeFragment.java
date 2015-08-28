@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
 
 import com.elrain.whattocook.R;
 import com.elrain.whattocook.activity.helper.DialogGetter;
@@ -23,6 +25,7 @@ import com.elrain.whattocook.message.CommonMessage;
 import com.elrain.whattocook.util.NetworkUtil;
 import com.elrain.whattocook.util.Preferences;
 import com.elrain.whattocook.webutil.rest.api.ApiWorker;
+import com.elrain.whattocook.webutil.rest.api.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +37,7 @@ import de.greenrobot.event.EventBus;
  */
 public class RecipeFragment extends Fragment {
 
+    public static final String FILE_SAVED_TO = "File saved to ";
     private ExpandableListView mElvItems;
     private ExpandRecipeAdapter mExpandRecipeAdapter;
     private static Bundle mArguments;
@@ -131,7 +135,7 @@ public class RecipeFragment extends Fragment {
                         case DialogInterface.BUTTON_NEGATIVE:
                             final List<Recipe> recipes = RecipeHelper.getPossibleRecipes(DbHelper.getInstance(getActivity()).getReadableDatabase(),
                                     mArguments.getLongArray(SelectFragment.INGRIDIENTS));
-                            if(recipes.size() == 0){
+                            if (recipes.size() == 0) {
                                 mExpandRecipeAdapter = new ExpandRecipeAdapter(getActivity(),
                                         RecipeHelper.getAllRecipes(DbHelper.getInstance(getActivity()).getReadableDatabase(),
                                                 Preferences.getInstance(getActivity())));
@@ -143,7 +147,6 @@ public class RecipeFragment extends Fragment {
             }).show();
         }
     }
-
 
     public void onEventMainThread(CommonMessage message) {
         if (message.mMessageEvent == CommonMessage.MessageEvent.FILTER_CHANGED) {
@@ -158,6 +161,10 @@ public class RecipeFragment extends Fragment {
                     RecipeHelper.getPossibleRecipes(DbHelper.getInstance(getActivity()).getReadableDatabase(),
                             mArguments.getLongArray(SelectFragment.INGRIDIENTS)));
             mElvItems.setAdapter(mExpandRecipeAdapter);
+        } else if(message.mMessageEvent == CommonMessage.MessageEvent.PDF_DOWNLOADED){
+            String fileName = (String) message.messageObject;
+            mExpandRecipeAdapter.notifyDataSetChanged();
+            Toast.makeText(getActivity(), FILE_SAVED_TO + String.format(Constants.PDF_LOCATION, fileName), Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -31,12 +31,15 @@ public interface RestApi {
     @PUT("/user/register")
     void registerUser(@Body UserBody user, Callback<Response> callback);
 
-    @GET("/list/{id}")
-    void getCommentsForRecipe(@Path("id") long id, Callback<List<CommentsResponse>> callback);
+    @GET("/comments/{recipeId}")
+    void getCommentsForRecipe(@Path("recipeId") long id, Callback<List<CommentsResponse>> callback);
 
     @PUT("/list/new")
     void addComment(@Body CommentBody comment, Callback<Response> callback);
 
     @GET("/recipe/search")
     void getRecipesByIngridients(@Query("ingridient")String[] names, Callback<List<RecipeResponse>> callback);
+
+    @GET("/file/pdf/{recipeId}")
+    void downloadPdf(@Path("recipeId") long recipeId, Callback<Response> callback);
 }

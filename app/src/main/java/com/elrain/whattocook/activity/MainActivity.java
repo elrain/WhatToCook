@@ -98,6 +98,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 changeFragment(RECIPES, null);
+                mDrawerLayout.closeDrawers();
             }
         });
 
@@ -105,7 +106,9 @@ public class MainActivity extends ActionBarActivity {
         btnOpenMyIngridients.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeFragment(ADDING_INGRIDIENTS, null);
+                if (!mLastTag.equals(ADDING_INGRIDIENTS))
+                    changeFragment(ADDING_INGRIDIENTS, null);
+                mDrawerLayout.closeDrawers();
             }
         });
 
@@ -113,7 +116,9 @@ public class MainActivity extends ActionBarActivity {
         btnSavedRecipes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                changeFragment(SAVED_RECIPES, null);
+                if (!mLastTag.equals(SAVED_RECIPES))
+                    changeFragment(SAVED_RECIPES, null);
+                mDrawerLayout.closeDrawers();
             }
         });
     }

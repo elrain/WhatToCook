@@ -1,6 +1,7 @@
 package com.elrain.whattocook.webutil.rest.api;
 
 import android.content.Context;
+import android.os.Environment;
 
 import com.elrain.whattocook.dal.DbHelper;
 import com.elrain.whattocook.dal.helper.AmountHelper;
@@ -12,8 +13,8 @@ import com.elrain.whattocook.dal.helper.GroupHelper;
 import com.elrain.whattocook.dal.helper.IngridientsHelper;
 import com.elrain.whattocook.dal.helper.KitchenTypeHelper;
 import com.elrain.whattocook.dal.helper.RecipeHelper;
-import com.elrain.whattocook.message.ListMessage;
 import com.elrain.whattocook.message.CommonMessage;
+import com.elrain.whattocook.message.ListMessage;
 import com.elrain.whattocook.webutil.rest.RestApi;
 import com.elrain.whattocook.webutil.rest.RestHelper;
 import com.elrain.whattocook.webutil.rest.body.CommentBody;
@@ -26,6 +27,11 @@ import com.elrain.whattocook.webutil.rest.response.IngridientsResponse;
 import com.elrain.whattocook.webutil.rest.response.RecipeResponse;
 import com.elrain.whattocook.webutil.rest.response.UserInfoResponse;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.List;
 
 import de.greenrobot.event.EventBus;
@@ -177,18 +183,60 @@ public class ApiWorker {
         });
     }
 
-    public void getRecipesByIngridients(String[] names){
+    public void getRecipesByIngridients(String[] names) {
         mApi.getRecipesByIngridients(names, new Callback<List<RecipeResponse>>() {
             @Override
             public void success(List<RecipeResponse> recipeResponse, Response response) {
-                if(null != recipeResponse)
-                startInit(recipeResponse);
+                if (null != recipeResponse)
+                    startInit(recipeResponse);
                 EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.NEW_RESIPES_ADDED));
             }
 
             @Override
             public void failure(RetrofitError error) {
+                error.toString();
+            }
+        });
+    }
 
+    public void downloadPdf(final long recipeId, final String fileName) {
+        mApi.downloadPdf(recipeId, new Callback<Response>() {
+            @Override
+            public void success(Response response, Response response2) {
+                if (response.getStatus() == 200) {
+                    InputStream is = null;
+                    OutputStream os = null;
+                    try {
+                        is = response.getBody().in();
+                        os = new FileOutputStream(new File(String.format(Constants.PDF_LOCATION, recipeId)));
+                        int read;
+                        byte[] bytes = new byte[1024];
+
+                        while ((read = is.read(bytes)) != -1)
+                            os.write(bytes, 0, read);
+                        EventBus.getDefault().post(new CommonMessage(CommonMessage.MessageEvent.PDF_DOWNLOADED, fileName));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (null != is)
+                            try {
+                                is.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        if (null != os)
+                            try {
+                                os.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                    }
+                }
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                error.toString();
             }
         });
     }

@@ -14,7 +14,7 @@ import javax.crypto.spec.PBEParameterSpec;
 /**
  * Created by elrain on 15.07.15.
  */
-public class Crypting {
+public final class Crypting {
 
     private static final char[] PASSWORD = "zEvXFvOccr2P5AYmczQr".toCharArray();
     private static final byte[] SALT = {

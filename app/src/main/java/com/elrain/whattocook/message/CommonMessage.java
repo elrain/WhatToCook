@@ -26,6 +26,7 @@ public class CommonMessage {
         USER_REGISTERED,
         COMMENT_SENT,
         NEW_RESIPES_ADDED,
+        PDF_DOWNLOADED,
 
         ERROR_USER_EXISTS,
         ERROR_COMMENT_SNET

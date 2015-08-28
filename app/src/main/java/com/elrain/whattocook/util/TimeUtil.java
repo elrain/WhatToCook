@@ -7,7 +7,7 @@ import java.util.Locale;
 /**
  * Created by elrain on 24.06.15.
  */
-public class TimeUtil {
+public final class TimeUtil {
     public static final String FULL_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 
     public static String getFullTime(long date) {

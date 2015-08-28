@@ -5,9 +5,9 @@
     android:layout_height="match_parent">
     <!-- The main content view -->
     <FrameLayout
-    android:id="@+id/content_frame"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <!--The navigation drawer android:layout_gravity="start"  -->
     <LinearLayout
         android:id="@+id/left_drawer"
@@ -27,7 +27,7 @@
             android:layout_marginLeft="@dimen/half_activity_horizontal_margin"
             android:layout_marginRight="@dimen/half_activity_horizontal_margin"
             android:layout_weight="1"
-            android:src="@drawable/ic_launcher" />
+            android:src="@drawable/ic_splash_screen" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -53,7 +53,7 @@
                 android:id="@+id/btnSavedRecipes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/button_saved_recipes"/>
+                android:text="@string/button_saved_recipes" />
         </LinearLayout>
 
         <LinearLayout

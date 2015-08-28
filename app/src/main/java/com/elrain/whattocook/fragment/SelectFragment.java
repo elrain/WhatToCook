@@ -113,8 +113,9 @@ public class SelectFragment extends Fragment implements View.OnClickListener {
         @Override
         public void afterTextChanged(Editable s) {
             if (s.toString().length() >= 2) {
-                List<IngridientsEntity> ingridients = IngridientsHelper.getIngridientsByName(mDbHelper.getReadableDatabase(), s.toString());
+                List<IngridientsEntity> ingridients = IngridientsHelper.getIngridientsByName(mDbHelper.getReadableDatabase(), s.toString(), mSelectedIds);
                 mAddIngridientsAdapter.addObjects(ingridients);
+
             } else mAddIngridientsAdapter.clearList();
         }
     }
